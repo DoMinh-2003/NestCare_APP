@@ -1,21 +1,24 @@
 {
   "expo": {
-    "name": "NestCare",
+    "name": "Nest Care",
     "slug": "NestCare",
+    "owner": "minhlola28",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "nestcare",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.minhlola28.nestcare"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.minhlola28.nestcare"
     },
     "web": {
       "bundler": "metro",
@@ -36,6 +39,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "7456d956-5763-4c1f-82f5-38c0fb96f41b"
+      }
     }
   }
 }
