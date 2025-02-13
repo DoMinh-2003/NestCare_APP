@@ -9,21 +9,21 @@ import { RootStackParamList } from '@/model/NavigationType';
 export default function oauthredirect() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
- 
 
-useEffect(() => {
-  // const handleRedirect = async () => {
-  //   const token = await AsyncStorage.getItem("token");
-  //   if (token) {
-  //     navigation.navigate("HomeMentor");
-  //   } else {
-  //     navigation.navigate("Login");
-  //   }
-  // };
 
-  // handleRedirect();
-  navigation.navigate('login')
-}, []);
+  useEffect(() => {
+    // const handleRedirect = async () => {
+    //   const token = await AsyncStorage.getItem("token");
+    //   if (token) {
+    //     navigation.navigate("HomeMentor");
+    //   } else {
+    //     navigation.navigate("Login");
+    //   }
+    // };
 
-return <></>;
+    // handleRedirect();
+    navigation.navigate('login')
+  }, []);
+
+  return <></>;
 }
