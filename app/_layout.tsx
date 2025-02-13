@@ -7,8 +7,8 @@ import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import SplashScreen from './components/SplashScreen';
+import { useEffect, useState } from 'react';
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -17,23 +17,36 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "@/redux/store";
 import { StateProvider } from "@/context/stateProvider";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      setIsLoading(false);
     }
+
+    // Simulate any initialization work
+    const prepare = async () => {
+      try {
+        // Add any initialization logic here
+        await new Promise(resolve => setTimeout(resolve, 500));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    prepare();
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
+  if (isLoading) {
+    return <SplashScreen />;
   }
 
   return (
