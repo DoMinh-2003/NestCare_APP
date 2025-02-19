@@ -1,38 +1,65 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { View, Text, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import HomeScreen from "@/screens/home/Home";
+import CommunityScreen from "@/screens/community/community";
+import AppointmentsScreen from "@/screens/appointments/appointments";
+import HealthTipsScreen from "@/screens/healthTips/healthTips";
+import ProfileScreen from "@/screens/profile/profile";
 
-// Screens
-const HomeScreen = () => (
-  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Welcome to Pregnancy Care Home</Text>
-  </View>
+const Stack = createStackNavigator();
+
+const HomeStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Home"
+      component={HomeScreen}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
 );
 
-const CommunityScreen = () => (
-  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Join our Community</Text>
-  </View>
+const CommunityStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Community"
+      component={CommunityScreen}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
 );
 
-const AppointmentScreen = () => (
-  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Manage Your Appointments</Text>
-  </View>
+const AppointmentStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Appointment"
+      component={AppointmentsScreen}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
 );
 
-const HealthyTipsScreen = () => (
-  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Healthy Tips for Pregnant Mothers</Text>
-  </View>
+const HealthyTipsStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Healthy Tips"
+      component={HealthTipsScreen}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
 );
 
-const ProfileScreen = () => (
-  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Your Profile</Text>
-  </View>
+const ProfileStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Profile"
+      component={ProfileScreen}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
 );
 
 // Bottom Tab Navigator
@@ -63,11 +90,11 @@ export default function App() {
           tabBarLabelStyle: { fontSize: 12, fontWeight: "bold" },
         })}
       >
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Community" component={CommunityScreen} />
-        <Tab.Screen name="Appointment" component={AppointmentScreen} />
-        <Tab.Screen name="Healthy Tips" component={HealthyTipsScreen} />
-        <Tab.Screen name="Profile" component={ProfileScreen} />
+        <Tab.Screen name="Home" component={HomeStack} />
+        <Tab.Screen name="Community" component={CommunityStack} />
+        <Tab.Screen name="Appointment" component={AppointmentStack} />
+        <Tab.Screen name="Healthy Tips" component={HealthyTipsStack} />
+        <Tab.Screen name="Profile" component={ProfileStack} />
       </Tab.Navigator>
     </>
   );
