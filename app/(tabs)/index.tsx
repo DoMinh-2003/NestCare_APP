@@ -9,7 +9,7 @@ export default function HomeScreen() {
   return (
     <ScrollView>
       <View>
-        <Text>Home Screen</Text>
+        <Text>Home Screen 123123</Text>
       </View>
     </ScrollView>
   );

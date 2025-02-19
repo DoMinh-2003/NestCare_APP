@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { GoogleSocialButton } from "react-native-social-buttons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -14,29 +21,29 @@ import { RootStackParamList } from "@/model/NavigationType";
 import * as AuthSession from "expo-auth-session";
 import Authentication from "@/service/Authentication";
 import { Button, ButtonText } from "@/components/ui/button";
-import { signIn } from '../../service/Authentication';
+import { signIn } from "../../service/Authentication";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF5F5',
+    backgroundColor: "#FFF5F5",
   },
   logoContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 30,
   },
   logo: {
     width: 150,
     height: 150,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   inputContainer: {
     paddingHorizontal: 20,
-    width: '100%',
+    width: "100%",
     gap: 15,
   },
   input: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 15,
     borderRadius: 25,
     fontSize: 16,
@@ -50,31 +57,31 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   loginButton: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: "#FF6B6B",
     paddingVertical: 15,
     borderRadius: 25,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   loginText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 20,
     paddingHorizontal: 20,
   },
   divider: {
     flex: 1,
     height: 1,
-    backgroundColor: '#D5D5D7',
+    backgroundColor: "#D5D5D7",
   },
   dividerText: {
     marginHorizontal: 10,
-    color: '#666',
+    color: "#666",
   },
   googleSocialButton: {
     borderWidth: 1,
@@ -82,12 +89,12 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     width: "85%",
     height: 47,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   error: {
-    color: 'red',
+    color: "red",
     marginTop: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
 
@@ -95,14 +102,19 @@ const Login = () => {
   const insets = useSafeAreaInsets();
   const { loginGoogle } = Authentication();
   const dispatch = useDispatch();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    iosClientId: "392832910333-ue02rtn0kdacm3ii1hoeabsgrtpft0ti.apps.googleusercontent.com",
-    androidClientId: "392832910333-7vhaq8rl8llf2ukc8oa7k72sr06quip2.apps.googleusercontent.com",
+    iosClientId:
+      "392832910333-ue02rtn0kdacm3ii1hoeabsgrtpft0ti.apps.googleusercontent.com",
+    androidClientId:
+      "392832910333-7vhaq8rl8llf2ukc8oa7k72sr06quip2.apps.googleusercontent.com",
+    webClientId:
+      "392832910333-g0gd0no6t0gan5560qeornescgku17ij.apps.googleusercontent.com",
   });
 
   const loginGG = async () => {
@@ -116,7 +128,7 @@ const Login = () => {
       await signIn(email, password);
       // router.replace('/home');
     } catch (error) {
-      setError('Login failed. Please try again.');
+      setError("Login failed. Please try again.");
     }
   };
 
@@ -128,12 +140,10 @@ const Login = () => {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.logoContainer}>
         <Image
-          source={require('@/assets/images/baby-logo.png')}
+          source={require("@/assets/images/baby-logo.png")}
           style={styles.logo}
         />
-        <Text className="text-xl font-semibold text-center mb-2">
-          Nestcare
-        </Text>
+        <Text className="text-xl font-semibold text-center mb-2">Nestcare</Text>
       </View>
 
       <View style={styles.inputContainer}>
@@ -156,11 +166,15 @@ const Login = () => {
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        <TouchableOpacity
-          onPress={handleLogin}
-          style={styles.loginButton}
-        >
+        <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
           <Text style={styles.loginText}>Login</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => navigation.replace("tabs")} // Điều hướng sang homepage
+          style={[styles.loginButton, { backgroundColor: "#4CAF50" }]} // Thay đổi màu cho dễ phân biệt
+        >
+          <Text style={styles.loginText}>Go to Homepage</Text>
         </TouchableOpacity>
 
         <View style={styles.dividerContainer}>
@@ -169,9 +183,7 @@ const Login = () => {
           <View style={styles.divider} />
         </View>
 
-        <Button
-          onPress={() => router.push('/Signup')}
-        >
+        <Button onPress={() => router.push("/Signup")}>
           <ButtonText>Create Account</ButtonText>
         </Button>
 

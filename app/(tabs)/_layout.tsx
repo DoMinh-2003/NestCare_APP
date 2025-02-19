@@ -1,66 +1,74 @@
 import React from "react";
-import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import Login from "@/screens/authScreens/Login";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import TabBar from "@/components/tabBar/TabBar";
-import HomeScreen from "./index";
-import TabTwoScreen from "./explore";
+import { NavigationContainer } from "@react-navigation/native";
+import { View, Text, Animated } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-const Stack = createNativeStackNavigator();
+// Screens
+const HomeScreen = () => (
+  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <Text>Welcome to Pregnancy Care Home</Text>
+  </View>
+);
+
+const CommunityScreen = () => (
+  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <Text>Join our Community</Text>
+  </View>
+);
+
+const AppointmentScreen = () => (
+  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <Text>Manage Your Appointments</Text>
+  </View>
+);
+
+const HealthyTipsScreen = () => (
+  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <Text>Healthy Tips for Pregnant Mothers</Text>
+  </View>
+);
+
+const ProfileScreen = () => (
+  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <Text>Your Profile</Text>
+  </View>
+);
+
+// Bottom Tab Navigator
 const Tab = createBottomTabNavigator();
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const HomeTabs = () => {
-    return (
-      <Tab.Navigator
-        tabBar={(props) => <TabBar {...props} />}
-        screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-          headerShown: false,
-          tabBarStyle: { height: 90 },
-          tabBarItemStyle: { paddingTop: 10 },
-        }}
-      >
-        <Tab.Screen
-          name="home"
-          component={HomeScreen}
-          options={{
-            title: "Home",
-            tabBarIcon: ({ color }) => (
-              <IconSymbol size={28} name="house.fill" color={color} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="explore"
-          component={TabTwoScreen}
-          options={{
-            title: "Explore",
-            tabBarIcon: ({ color }) => (
-              <IconSymbol size={28} name="paperplane.fill" color={color} />
-            ),
-          }}
-        />
-      </Tab.Navigator>
-    );
-  };
-
+export default function App() {
   return (
-    <Stack.Navigator initialRouteName="login">
-      <Stack.Screen
-        name="login"
-        component={Login}
-        options={{ title: "Login", headerShown: false }}
-      />
-      <Stack.Screen
-        name="tabs"
-        component={HomeTabs}
-        options={{ headerShown: false, title: "tabs" }}
-      />
-    </Stack.Navigator>
+    <>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName: keyof typeof Ionicons.glyphMap = "home"; // Default
+            const scale = new Animated.Value(focused ? 1.2 : 1);
+
+            if (route.name === "Community") iconName = "people";
+            else if (route.name === "Appointment") iconName = "calendar";
+            else if (route.name === "Healthy Tips") iconName = "heart";
+            else if (route.name === "Profile") iconName = "person";
+
+            return (
+              <Animated.View style={{ transform: [{ scale }] }}>
+                <Ionicons name={iconName} size={size} color={color} />
+              </Animated.View>
+            );
+          },
+          tabBarActiveTintColor: "pink",
+          tabBarInactiveTintColor: "gray",
+          tabBarLabelStyle: { fontSize: 12, fontWeight: "bold" },
+        })}
+      >
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Community" component={CommunityScreen} />
+        <Tab.Screen name="Appointment" component={AppointmentScreen} />
+        <Tab.Screen name="Healthy Tips" component={HealthyTipsScreen} />
+        <Tab.Screen name="Profile" component={ProfileScreen} />
+      </Tab.Navigator>
+    </>
   );
 }
