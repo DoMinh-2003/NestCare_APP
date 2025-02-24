@@ -107,7 +107,28 @@ const Login = () => {
 
   const loginGG = async () => {
     if (response?.type === "success") {
-      navigation.replace("tabs");
+      navigation.navigate("tabs");
+      // const { authentication } = response;
+      // const credential = await GoogleAuthProvider.credential(
+      //   authentication?.idToken,
+      //   authentication?.accessToken
+      // );
+      // try {
+      //   const res = await signInWithCredential(auth, credential);
+      //   const { accessToken }: any = res.user;
+      //   const response = await loginGoogle(accessToken);
+      //   const { data } = response;
+      //   dispatch(login(data));
+      //   await AsyncStorage.setItem("token", data.token);
+      //   navigation.navigate("Home");
+      //   if (data.role == "STUDENT") {
+      //     navigation.navigate("Login");
+      //   } else {
+      //     navigation.navigate("Profile");
+      //   }
+      // } catch (error) {
+      //   console.error(error);
+      // }
     }
   };
 
