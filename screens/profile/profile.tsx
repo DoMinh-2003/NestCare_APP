@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native";
-import Ionicons from '@expo/vector-icons/Ionicons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Button } from "@/components/ui/button";
 
 interface ProfileModel {
   name: string;
@@ -75,18 +84,33 @@ const ProfileScreen: React.FC = () => {
     );
   }
 
+  const clearTokenAndLogStorage = async () => {
+    try {
+      // Remove the token
+      await AsyncStorage.removeItem("token");
+      console.log("✅ Token removed successfully!");
+
+      // Log all stored keys and values
+      const allKeys = await AsyncStorage.getAllKeys();
+      const allValues = await AsyncStorage.multiGet(allKeys);
+
+      console.log("📦 AsyncStorage Contents:");
+      allValues.forEach(([key, value]) => {
+        console.log(`🔑 ${key}: ${value}`);
+      });
+    } catch (error) {
+      console.error("❌ Error clearing token or logging storage:", error);
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       {/* Header Section */}
-      <View style={styles.header}>
-      </View>
+      <View style={styles.header}></View>
 
       {/* User Info Section */}
       <View style={styles.userInfo}>
-        <Image
-          source={{ uri: profileData.avatarUrl }}
-          style={styles.avatar}
-        />
+        <Image source={{ uri: profileData.avatarUrl }} style={styles.avatar} />
         <View style={styles.userDetails}>
           <Text style={styles.name}>{profileData.name}</Text>
           <Text style={styles.email}>{profileData.email}</Text>
@@ -103,10 +127,20 @@ const ProfileScreen: React.FC = () => {
           {profileData.goals.map((goal) => (
             <TouchableOpacity
               key={goal}
-              style={[styles.goalButton, selectedGoal === goal && styles.selectedGoal]}
+              style={[
+                styles.goalButton,
+                selectedGoal === goal && styles.selectedGoal,
+              ]}
               onPress={() => setSelectedGoal(goal)}
             >
-              <Text style={[styles.goalText, selectedGoal === goal && styles.selectedGoalText]}>{goal}</Text>
+              <Text
+                style={[
+                  styles.goalText,
+                  selectedGoal === goal && styles.selectedGoalText,
+                ]}
+              >
+                {goal}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -115,11 +149,14 @@ const ProfileScreen: React.FC = () => {
       {/* MyFlow Premium Section */}
       <View style={styles.card}>
         <View style={styles.premiumSection}>
-          <Text style={styles.premiumIcon}>✅</Text> {/* Placeholder for checkmark icon */}
-          <View>
+          <Text>
+            <Text style={styles.premiumIcon}>✅ </Text>
             <Text style={styles.premiumTitle}>{profileData.premium.title}</Text>
-            <Text style={styles.premiumText}>{profileData.premium.description}</Text>
-          </View>
+            {"\n"}
+            <Text style={styles.premiumText}>
+              {profileData.premium.description}
+            </Text>
+          </Text>
         </View>
       </View>
 
@@ -134,10 +171,13 @@ const ProfileScreen: React.FC = () => {
         ))}
       </View>
 
-      <TouchableOpacity style={styles.logoutButton} >
+      <TouchableOpacity
+        style={styles.logoutButton}
+        onPress={clearTokenAndLogStorage}
+      >
         <Ionicons name="exit-outline" size={24} color="white" />
         <Text style={styles.logoutText}>Logout</Text>
-      </TouchableOpacity >
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -197,7 +237,7 @@ const styles = StyleSheet.create({
   editButtonText: {
     fontSize: 14,
     color: "#666",
-    borderRadius: 10
+    borderRadius: 10,
   },
   card: {
     backgroundColor: "#FFFFFF",
@@ -287,20 +327,20 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     margin: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
-    backgroundColor: '#ff3b3b',
+    backgroundColor: "#ff3b3b",
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 25,
   },
   logoutText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 10,
-  }
+  },
 });
 
 export default ProfileScreen;
