@@ -75,9 +75,31 @@ export default function App() {
             const scale = new Animated.Value(focused ? 1.2 : 1);
 
             if (route.name === "Community") iconName = "people";
-            else if (route.name === "Appointment") iconName = "calendar";
             else if (route.name === "Healthy Tips") iconName = "heart";
             else if (route.name === "Profile") iconName = "person";
+
+            if (route.name === "Appointment") {
+              return (
+                <View
+                  style={{
+                    width: 70, // Làm icon lớn hơn
+                    height: 70,
+                    borderRadius: 35,
+                    backgroundColor: "pink", // Màu nổi bật
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: 50, // Đẩy icon lên vừa đủ để không che mất chữ
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 5 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 5,
+                    elevation: 5,
+                  }}
+                >
+                  <Ionicons name="calendar" size={36} color="white" />
+                </View>
+              );
+            }
 
             return (
               <Animated.View style={{ transform: [{ scale }] }}>
@@ -85,9 +107,35 @@ export default function App() {
               </Animated.View>
             );
           },
+          tabBarLabel: ({ focused, color }) => {
+            if (route.name === "Appointment") {
+              return (
+                <Text
+                  style={{
+                    color,
+                    fontSize: 12,
+                    fontWeight: "bold",
+                    // marginTop: -10,
+                  }}
+                >
+                  Appointment
+                </Text>
+              );
+            }
+            return (
+              <Text style={{ color, fontSize: 12, fontWeight: "bold" }}>
+                {route.name}
+              </Text>
+            );
+          },
           tabBarActiveTintColor: "pink",
           tabBarInactiveTintColor: "gray",
-          tabBarLabelStyle: { fontSize: 12, fontWeight: "bold" },
+          tabBarLabelStyle: { fontSize: 14, fontWeight: "bold" },
+          tabBarStyle: {
+            height: 60,
+            // paddingBottom: 20,
+            paddingTop: 5,
+          },
         })}
       >
         <Tab.Screen name="Home" component={HomeStack} />
