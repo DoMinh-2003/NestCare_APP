@@ -1,104 +1,64 @@
-import TabBar from "@/components/tabBar/TabBar";
-import AppointmentsScreen from "@/screens/appointments/appointments";
-import Login from "@/screens/authScreens/Login";
-import CommunityScreen from "@/screens/community/community";
-import HomeScreen from "@/screens/home/Home";
-import Packages from "@/screens/packages/Packages";
-import ProfileScreen from "@/screens/profile/profile";
-import { Ionicons } from "@expo/vector-icons";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { Animated, Text, View } from "react-native";
-const Stack = createStackNavigator();
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { View, Text, Animated } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import Login from "@/screens/authScreens/Login";
+import TabBar from "@/components/tabBar/TabBar";
 
-const HomeStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen
-      name="Home"
-      component={HomeScreen}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
+// Define Screens
+const HomeScreen = () => (
+  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <Text>Welcome to Pregnancy Care Home</Text>
+  </View>
 );
 
-const CommunityStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen
-      name="Community"
-      component={CommunityScreen}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
+const CommunityScreen = () => (
+  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <Text>Join our Community</Text>
+  </View>
 );
 
-const AppointmentStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen
-      name="Appointment"
-      component={AppointmentsScreen}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
+const AppointmentScreen = () => (
+  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <Text>Manage Your Appointments</Text>
+  </View>
 );
 
-const HealthyTipsStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen
-      name="Packages"
-      component={Packages}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
+const HealthyTipsScreen = () => (
+  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <Text>Healthy Tips for Pregnant Mothers</Text>
+  </View>
 );
 
-const ProfileStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen
-      name="Profile"
-      component={ProfileScreen}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
+const ProfileScreen = () => (
+  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <Text>Your Profile</Text>
+  </View>
 );
 
+// Navigators
+const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const AppNavigator = () => {
+const HomeTabs = () => {
+  const colorScheme = useColorScheme();
+
   return (
     <Tab.Navigator
-      initialRouteName="login"
+      tabBar={(props) => <TabBar {...props} />}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName: keyof typeof Ionicons.glyphMap = "home";
+          let iconName: keyof typeof Ionicons.glyphMap = "home"; // Default
           const scale = new Animated.Value(focused ? 1.2 : 1);
 
           if (route.name === "Community") iconName = "people";
+          else if (route.name === "Appointment") iconName = "calendar";
           else if (route.name === "Healthy Tips") iconName = "heart";
           else if (route.name === "Profile") iconName = "person";
-
-          if (route.name === "Appointment") {
-            return (
-              <View
-                style={{
-                  width: 70,
-                  height: 70,
-                  borderRadius: 35,
-                  backgroundColor: "pink",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: 50,
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 5 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 5,
-                  elevation: 5,
-                }}
-              >
-                <Ionicons name="calendar" size={36} color="white" />
-              </View>
-            );
-          }
 
           return (
             <Animated.View style={{ transform: [{ scale }] }}>
@@ -106,37 +66,33 @@ const AppNavigator = () => {
             </Animated.View>
           );
         },
-        tabBarLabel: ({ focused, color }) => (
-          <Text style={{ color, fontSize: 12, fontWeight: "bold" }}>
-            {route.name}
-          </Text>
-        ),
         tabBarActiveTintColor: "pink",
         tabBarInactiveTintColor: "gray",
-        tabBarLabelStyle: { fontSize: 14, fontWeight: "bold" },
-        tabBarStyle: {
-          height: 60,
-          paddingTop: 5,
-        },
+        tabBarLabelStyle: { fontSize: 12, fontWeight: "bold" },
       })}
     >
-      <Stack.Screen
-        name="login"
-        component={Login}
-        options={{ title: "Login", headerShown: false }}
-      />
-      <Stack.Screen
-        name="(tabs)"
-        component={HomeStack}
-        options={{ headerShown: false, title: "(tabs)" }}
-      />
-      <Tab.Screen name="Home" component={HomeStack} />
-      <Tab.Screen name="Community" component={CommunityStack} />
-      <Tab.Screen name="Appointment" component={AppointmentStack} />
-      <Tab.Screen name="Healthy Tips" component={HealthyTipsStack} />
-      <Tab.Screen name="Profile" component={ProfileStack} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ title: "Home" }} />
+      <Tab.Screen name="Community" component={CommunityScreen} options={{ title: "Community" }} />
+      <Tab.Screen name="Appointment" component={AppointmentScreen} options={{ title: "Appointment" }} />
+      <Tab.Screen name="Healthy Tips" component={HealthyTipsScreen} options={{ title: "Healthy Tips" }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: "Profile" }} />
     </Tab.Navigator>
   );
 };
 
-export default AppNavigator;
+export default function App() {
+  return (
+    <Stack.Navigator initialRouteName="login">
+      <Stack.Screen
+        name="login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="tabs"
+        component={HomeTabs}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+}
