@@ -1,14 +1,13 @@
-import React from "react";
+import AppointmentsScreen from "@/screens/appointments/appointments";
+import CommunityScreen from "@/screens/community/community";
+import HealthTipsScreen from "@/screens/healthTips/healthTips";
+import HomeScreen from "@/screens/home/Home";
+import ProfileScreen from "@/screens/profile/profile";
+import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
-import { View, Text, Animated } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import HomeScreen from "@/screens/home/Home";
-import CommunityScreen from "@/screens/community/community";
-import AppointmentsScreen from "@/screens/appointments/appointments";
-import HealthTipsScreen from "@/screens/healthTips/healthTips";
-import ProfileScreen from "@/screens/profile/profile";
+import React from "react";
+import { Animated } from "react-native";
 
 const Stack = createStackNavigator();
 
