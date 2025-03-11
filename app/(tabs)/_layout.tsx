@@ -1,15 +1,15 @@
-import React from "react";
+import TabBar from "@/components/tabBar/TabBar";
+import AppointmentsScreen from "@/screens/appointments/appointments";
+import Login from "@/screens/authScreens/Login";
+import CommunityScreen from "@/screens/community/community";
+import HomeScreen from "@/screens/home/Home";
+import Packages from "@/screens/packages/Packages";
+import ProfileScreen from "@/screens/profile/profile";
+import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import { View, Text, Animated } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import HomeScreen from "@/screens/home/Home";
-import CommunityScreen from "@/screens/community/community";
-import AppointmentsScreen from "@/screens/appointments/appointments";
-import HealthTipsScreen from "@/screens/healthTips/healthTips";
-import ProfileScreen from "@/screens/profile/profile";
-import Packages from "@/screens/packages/Packages";
-
+import React from "react";
+import { Animated, Text, View } from "react-native";
 const Stack = createStackNavigator();
 
 const HomeStack = () => (
@@ -67,6 +67,7 @@ const Tab = createBottomTabNavigator();
 const AppNavigator = () => {
   return (
     <Tab.Navigator
+      initialRouteName="login"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap = "home";
@@ -119,6 +120,16 @@ const AppNavigator = () => {
         },
       })}
     >
+      <Stack.Screen
+        name="login"
+        component={Login}
+        options={{ title: "Login", headerShown: false }}
+      />
+      <Stack.Screen
+        name="(tabs)"
+        component={HomeStack}
+        options={{ headerShown: false, title: "(tabs)" }}
+      />
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Community" component={CommunityStack} />
       <Tab.Screen name="Appointment" component={AppointmentStack} />
