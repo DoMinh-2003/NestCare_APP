@@ -1,44 +1,19 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import { View, Text, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
+import HomeScreen from "@/screens/home/Home";
+import CommunityScreen from "@/screens/community/community";
+import AppointmentsScreen from "@/screens/appointments/appointments";
+import HealthTipsScreen from "@/screens/healthTips/healthTips";
+import ProfileScreen from "@/screens/profile/profile";
+import Packages from "@/screens/packages/Packages";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import Login from "@/screens/authScreens/Login";
 import TabBar from "@/components/tabBar/TabBar";
-
+import Login from "@/screens/authScreens/Login";
 // Define Screens
-const HomeScreen = () => (
-  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Welcome to Pregnancy Care Home</Text>
-  </View>
-);
-
-const CommunityScreen = () => (
-  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Join our Community</Text>
-  </View>
-);
-
-const AppointmentScreen = () => (
-  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Manage Your Appointments</Text>
-  </View>
-);
-
-const HealthyTipsScreen = () => (
-  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Healthy Tips for Pregnant Mothers</Text>
-  </View>
-);
-
-const ProfileScreen = () => (
-  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Your Profile</Text>
-  </View>
-);
 
 // Navigators
 const Stack = createNativeStackNavigator();
@@ -49,7 +24,7 @@ const HomeTabs = () => {
 
   return (
     <Tab.Navigator
-      tabBar={(props) => <TabBar {...props} />}
+      // tabBar={(props) => <TabBar {...props} />}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap = "home"; // Default
@@ -73,14 +48,14 @@ const HomeTabs = () => {
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ title: "Home" }} />
       <Tab.Screen name="Community" component={CommunityScreen} options={{ title: "Community" }} />
-      <Tab.Screen name="Appointment" component={AppointmentScreen} options={{ title: "Appointment" }} />
-      <Tab.Screen name="Healthy Tips" component={HealthyTipsScreen} options={{ title: "Healthy Tips" }} />
+      <Tab.Screen name="Appointment" component={AppointmentsScreen} options={{ title: "Appointment" }} />
+      <Tab.Screen name="Healthy Tips" component={HealthTipsScreen} options={{ title: "Healthy Tips" }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: "Profile" }} />
     </Tab.Navigator>
   );
 };
 
-export default function App() {
+export default function AppNavigator() {
   return (
     <Stack.Navigator initialRouteName="login">
       <Stack.Screen
