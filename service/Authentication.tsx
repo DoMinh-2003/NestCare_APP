@@ -20,17 +20,17 @@ const Authentication = () => {
   return { loginGoogle, loading };
 };
 
-// export const signIn = async (email: string, password: string) => {
+// export const signIn = async (username: string, password: string) => {
 //   try {
 //     // Add your authentication logic here (e.g., Firebase, custom backend)
 //     const response = await callApi(
 //       "post",
 //       "login",
-//       { email, password },
+//       { username, password },
 //       "Login Successfully"
 //     );
 //     // Store user token/session
-//     await AsyncStorage.setItem('userToken', response.token);
+//     await AsyncStorage.setItem("userToken", response.token);
 //     return response;
 //   } catch (error) {
 //     throw error;

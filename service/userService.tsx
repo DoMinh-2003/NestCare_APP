@@ -1,24 +1,20 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { axiosInstance } from "./customize-axios";
-// http://14.225.217.181:3000/api/packages
-export const Login = async () => {
+
+export const Login2 = async (username: string, password: string) => {
   try {
     const response = await axiosInstance.post("/auth/login", {
-      //   searchCondition: {
-      //     keyword: "",
-      //     is_deleted: false,
-      //   },
-      //   pageInfo: {
-      //     pageNum: 1,
-      //     pageSize: 1000,
-      //   },
+      username,
+      password,
     });
 
-    console.log("====================================");
-    console.log("Login", response);
-    console.log("====================================");
+    console.log("Login Response:", response); 
 
     return response;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    console.error("Login Error:", error.response || error.message);
+    throw new Error(
+      error.response?.data?.message || "Login failed. Please try again."
+    );
   }
 };

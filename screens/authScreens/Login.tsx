@@ -21,7 +21,8 @@ import { RootStackParamList } from "@/model/NavigationType";
 import * as AuthSession from "expo-auth-session";
 import Authentication from "@/service/Authentication";
 import { Button, ButtonText } from "@/components/ui/button";
-import { signIn } from "../../service/Authentication";
+// import { signIn } from "../../service/Authentication";
+import { Login2 } from "@/service/userService";
 
 const styles = StyleSheet.create({
   container: {
@@ -104,7 +105,8 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -146,7 +148,10 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      await signIn(email, password);
+      const res = await Login2(username, password);
+      console.log("res", res);
+      navigation.replace("tabs");
+
       // router.replace('/home');
     } catch (error) {
       setError("Login failed. Please try again.");
@@ -170,10 +175,10 @@ const Login = () => {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
+          placeholder="Username"
+          value={username}
+          onChangeText={setUsername}
+          // keyboardType="email-address"
           autoCapitalize="none"
         />
 

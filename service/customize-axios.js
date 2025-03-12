@@ -4,7 +4,7 @@ import axios from 'axios';
 const axiosInstance = axios.create({
   // baseURL: 'http://192.168.2.12:8080/api',
   // baseURL: 'http://192.168.88.161:8080/api',
-  baseURL: 'http://14.225.217.181:3000/api',
+  baseURL: 'https://39c3-171-252-188-38.ngrok-free.app/api/',
   // baseURL: 'http://192.168.1.3:8080/api',
   // baseURL: 'http://192.168.1.3:8080/api',
   // baseURL: 'http://10.87.13.176:8080/api',
