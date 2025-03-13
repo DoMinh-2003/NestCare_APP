@@ -8,8 +8,17 @@ import {
   ScrollView,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button } from "@/components/ui/button";
+
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../redux/features/userSlice"; // Adjust path as needed
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
+import { RootStackParamList } from "@/model/NavigationType";
+import { showMessage } from "react-native-flash-message";
+import { RootState } from "../../redux/store";
 
 interface ProfileModel {
   name: string;
@@ -42,6 +51,12 @@ const ProfileScreen: React.FC = () => {
   const [profileData, setProfileData] = useState<ProfileModel | null>(null);
   const [selectedGoal, setSelectedGoal] = useState<string>("Get pregnant");
   const [loading, setLoading] = useState<boolean>(true);
+
+  const dispatch = useDispatch();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const username = useSelector((state: RootState) => state.user?.username);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -84,22 +99,42 @@ const ProfileScreen: React.FC = () => {
     );
   }
 
+  // const clearTokenAndLogStorage = async () => {
+  //   try {
+  //     // Remove the token
+  //     await AsyncStorage.removeItem("token");
+  //     console.log("✅ Token removed successfully!");
+
+  //     // Log all stored keys and values
+  //     const allKeys = await AsyncStorage.getAllKeys();
+  //     const allValues = await AsyncStorage.multiGet(allKeys);
+
+  //     console.log("📦 AsyncStorage Contents:");
+  //     allValues.forEach(([key, value]) => {
+  //       console.log(`🔑 ${key}: ${value}`);
+  //     });
+  //   } catch (error) {
+  //     console.error("❌ Error clearing token or logging storage:", error);
+  //   }
+  // };
+
   const clearTokenAndLogStorage = async () => {
     try {
-      // Remove the token
-      await AsyncStorage.removeItem("token");
-      console.log("✅ Token removed successfully!");
+      await AsyncStorage.removeItem("token"); // Clear token from storage
+      dispatch(logout()); // Clear user state from Redux
 
-      // Log all stored keys and values
-      const allKeys = await AsyncStorage.getAllKeys();
-      const allValues = await AsyncStorage.multiGet(allKeys);
-
-      console.log("📦 AsyncStorage Contents:");
-      allValues.forEach(([key, value]) => {
-        console.log(`🔑 ${key}: ${value}`);
+      showMessage({
+        message: "Chào tạm biệt 👋",
+        description: `${username} đã đăng xuất thành công!`,
+        type: "none",
+        icon: "none",
+        backgroundColor: "red", // background color
+        duration: 3000, // 2 seconds
       });
+
+      navigation.replace("login");
     } catch (error) {
-      console.error("❌ Error clearing token or logging storage:", error);
+      console.error("Logout failed:", error);
     }
   };
 

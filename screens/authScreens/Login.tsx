@@ -23,11 +23,15 @@ import Authentication from "@/service/Authentication";
 import { Button, ButtonText } from "@/components/ui/button";
 // import { signIn } from "../../service/Authentication";
 import { Login2 } from "@/service/userService";
+// import Toast from "react-native-toast-message";
+import { showMessage } from "react-native-flash-message";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFF5F5",
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   logoContainer: {
     alignItems: "center",
@@ -150,10 +154,43 @@ const Login = () => {
     try {
       const res = await Login2(username, password);
       console.log("res", res);
-      navigation.replace("tabs");
 
-      // router.replace('/home');
+      if (res?.token) {
+        // Save token to AsyncStorage
+        await AsyncStorage.setItem("token", res.token);
+
+        // Create a complete User object that satisfies your interface
+        const userData = {
+          // Include the properties from the API response
+          token: res.token,
+          username: res.username,
+          email: res.email,
+          fullName: res.fullName,
+
+          // Add the missing required properties with default values
+          id: res.id || "", // Use empty string if ID is not provided
+          phone: res.phone || "",
+          role: res.role || "user", // Default role
+          isDeleted: res.isDeleted || false,
+        };
+
+        // Dispatch login action with the complete user data
+        dispatch(login(userData));
+
+        showMessage({
+          message: "Xin chào 👋",
+          description: `${res.fullName} đã đăng nhập thành công!`,
+          type: "success",
+          icon: "success",
+          duration: 3000, // 2 seconds
+        });
+
+        navigation.replace("tabs");
+      } else {
+        setError("Login failed. Invalid credentials.");
+      }
     } catch (error) {
+      console.error(error);
       setError("Login failed. Please try again.");
     }
   };
@@ -196,12 +233,12 @@ const Login = () => {
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => navigation.replace("tabs")} // Điều hướng sang homepage
           style={[styles.loginButton, { backgroundColor: "#4CAF50" }]} // Thay đổi màu cho dễ phân biệt
         >
           <Text style={styles.loginText}>Go to Homepage</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={styles.dividerContainer}>
           <View style={styles.divider} />
@@ -209,7 +246,7 @@ const Login = () => {
           <View style={styles.divider} />
         </View>
 
-        <Button onPress={() => router.push("/Signup")}>
+        <Button onPress={() => navigation.replace("signup")}>
           <ButtonText>Create Account</ButtonText>
         </Button>
 

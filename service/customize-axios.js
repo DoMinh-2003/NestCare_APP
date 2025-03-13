@@ -4,14 +4,15 @@ import axios from 'axios';
 const axiosInstance = axios.create({
   // baseURL: 'http://192.168.2.12:8080/api',
   // baseURL: 'http://192.168.88.161:8080/api',
-  baseURL: 'https://39c3-171-252-188-38.ngrok-free.app/api/',
+  baseURL: 'https://5a65-118-69-182-149.ngrok-free.app/api/',
   // baseURL: 'http://192.168.1.3:8080/api',
   // baseURL: 'http://192.168.1.3:8080/api',
   // baseURL: 'http://10.87.13.176:8080/api',
   headers: {
     'Content-Type': 'application/json',
+    "ngrok-skip-browser-warning": "true"
   },
-  timeout: 10000, // 10 seconds
+  timeout: 20000, // 20 seconds
 });
 
 axiosInstance.interceptors.request.use(
