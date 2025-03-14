@@ -1,182 +1,132 @@
-import React from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import React, { useEffect, useState, useCallback } from "react";
+import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import { getAllRoleDoctor } from "@/service/userService";
 
-// Define props for FeatureItem component
-interface FeatureItemProps {
-  icon: keyof typeof MaterialIcons.glyphMap;
-  title: string;
-}
+const HomeScreen = () => {
+  const [doctors, setDoctors] = useState([]);
 
-// Define props for NavItem component
-interface NavItemProps {
-  icon: keyof typeof MaterialIcons.glyphMap;
-  label: string;
-  active?: boolean;
-}
+  // Memoized function to fetch doctors
+  const fetchDoctors = useCallback(async () => {
+    const doctorList = await getAllRoleDoctor("doctor");
+    setDoctors(doctorList); // ✅ Now correctly setting only doctor list
+  }, []);
 
-// HomeScreen component
-const HomeScreen: React.FC = () => {
+  useEffect(() => {
+    fetchDoctors();
+  }, [fetchDoctors]);
+
+  const services = [
+    { id: 1, name: "Ultrasound", icon: "medical-services" },
+    { id: 2, name: "Prenatal Checkup", icon: "pregnant-woman" },
+    { id: 3, name: "Nutrition Counseling", icon: "restaurant" },
+    { id: 4, name: "Yoga Classes", icon: "self-improvement" },
+  ];
+
+  const upcomingAppointment = {
+    doctor: "Dr. Anna Nguyen",
+    date: "March 20, 2025",
+    time: "10:00 AM",
+  };
+
   return (
-    <View style={styles.container}>
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#999" />
-        <TextInput
-          placeholder="Tìm bệnh viện, bác sĩ"
-          style={styles.searchInput}
-        />
+    <ScrollView style={styles.container}>
+      {/* Upcoming Appointment */}
+      <View style={styles.upcomingContainer}>
+        <Text style={styles.sectionTitle}>Upcoming Appointment</Text>
+        <View style={styles.appointmentCard}>
+          <Text style={styles.appointmentText}>
+            {upcomingAppointment.doctor}
+          </Text>
+          <Text style={styles.appointmentText}>
+            {upcomingAppointment.date} at {upcomingAppointment.time}
+          </Text>
+        </View>
       </View>
 
-      <ScrollView>
-        {/* Banner */}
-        {/* <View style={styles.banner}>
-          <Image
-            source={require("../../assets/images/bannerhospital.jpg")}
-            style={styles.bannerImage}
-          />
-        </View> */}
-
-        {/* Features Section */}
-        <View style={styles.featuresContainer}>
-          <FeatureItem icon="local-hospital" title="Chọn Bệnh viện" />
-          <FeatureItem icon="video-call" title="Bác sĩ tư vấn" />
-          <FeatureItem icon="assignment" title="Hồ sơ sức khỏe" />
-          <FeatureItem icon="shopping-cart" title="Mua sắm" />
-          <FeatureItem icon="phone" title="Gọi bác sĩ khẩn cấp" />
-          <FeatureItem icon="chat" title="Cộng đồng" />
-          <FeatureItem icon="event" title="Đặt hẹn Bác sĩ" />
-          <FeatureItem icon="calendar-today" title="Lịch khám" />
-        </View>
-
-        {/* Featured Doctors */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>👨‍⚕️ Bác sĩ nổi bật</Text>
-          <TouchableOpacity>
-            <Text style={styles.viewMore}>Xem thêm</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Doctor list (To be implemented) */}
+      {/* List of Doctors */}
+      <Text style={styles.sectionTitle}>Doctors</Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.doctorScroll}
+      >
+        {doctors.length > 0 ? (
+          doctors.map((doctor) => (
+            <View key={doctor.id} style={styles.doctorCard}>
+              <Image
+                source={{
+                  uri:
+                    doctor.image ||
+                    "https://tamanhhospital.vn/wp-content/uploads/2020/12/duong-viet-bac-detail.png",
+                }}
+                style={styles.doctorImage}
+                resizeMode="contain"
+              />
+              <Text style={styles.doctorName}>{doctor.fullName}</Text>
+              <Text style={styles.doctorSpecialty}>{doctor.role}</Text>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.noDoctorText}>No doctors available</Text>
+        )}
       </ScrollView>
 
-      {/* Bottom Navigation Bar */}
-      {/* <View style={styles.navbar}>
-        <NavItem icon="home" label="Trang chủ" active />
-        <NavItem icon="people" label="Cộng đồng" />
-        <NavItem icon="notifications" label="Thông báo" />
-        <NavItem icon="person" label="Cá nhân" />
-      </View> */}
-    </View>
+      {/* Services */}
+      <Text style={styles.sectionTitle}>Services</Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.serviceScroll}
+      >
+        {services.map((service) => (
+          <View key={service.id} style={styles.serviceCard}>
+            <Icon name={service.icon} size={40} color="#FF6F61" />
+            <Text style={styles.serviceText}>{service.name}</Text>
+          </View>
+        ))}
+      </ScrollView>
+    </ScrollView>
   );
 };
 
-// FeatureItem Component
-const FeatureItem: React.FC<FeatureItemProps> = ({ icon, title }) => (
-  <View style={styles.featureItem}>
-    <MaterialIcons name={icon} size={28} color="#FF6B6B" />
-    <Text style={styles.featureText}>{title}</Text>
-  </View>
-);
-
-// Navigation Item Component
-const NavItem: React.FC<NavItemProps> = ({ icon, label, active = false }) => (
-  <View style={styles.navItem}>
-    <MaterialIcons name={icon} size={30} color={active ? "#FF6B6B" : "#777"} />
-    <Text style={[styles.navText, active && { color: "#FF6B6B" }]}>
-      {label}
-    </Text>
-  </View>
-);
-
-// Styles
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F8F8F8",
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 8,
-    margin: 15,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  searchInput: {
-    marginLeft: 10,
-    flex: 1,
-    fontSize: 16,
-  },
-  banner: {
-    width: "100%", // Ensure the container takes full width
-    padding: 0,
-  },
-  bannerImage: {
-    width: "100%", // Full width
-    height: 200, // Adjust height as needed
-    resizeMode: "contain", // Ensure full visibility
-    alignSelf: "stretch", // Stretch to fill parent width
-  },
-  featuresContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+  container: { flex: 1, padding: 20, backgroundColor: "#FFF" },
+  sectionTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
+  upcomingContainer: { marginBottom: 20 },
+  appointmentCard: {
+    backgroundColor: "#FFEBEE",
     padding: 15,
+    borderRadius: 10,
   },
-  featureItem: {
-    width: "22%",
+  appointmentText: { fontSize: 16, fontWeight: "bold" },
+  doctorScroll: { marginBottom: 20 },
+  doctorCard: {
     alignItems: "center",
-    marginVertical: 10,
+    marginRight: 15,
+    backgroundColor: "#F8F8F8",
+    padding: 10,
+    borderRadius: 10,
   },
-  featureText: {
-    fontSize: 12,
-    textAlign: "center",
-    marginTop: 5,
-    color: "#333",
+  doctorImage: {
+    width: 160,
+    height: 160,
+    borderRadius: 40,
+    marginBottom: 5,
   },
-  section: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+
+  doctorName: { fontSize: 14, fontWeight: "bold" },
+  doctorSpecialty: { fontSize: 12, color: "gray" },
+  noDoctorText: { fontSize: 14, fontWeight: "bold", color: "gray" },
+  serviceScroll: { marginBottom: 20 },
+  serviceCard: {
     alignItems: "center",
+    marginRight: 15,
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: "#FFF5F5",
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  viewMore: {
-    fontSize: 14,
-    color: "#FF6B6B",
-  },
-  // navbar: {
-  //   flexDirection: "row",
-  //   justifyContent: "space-around",
-  //   padding: 10,
-  //   backgroundColor: "#fff",
-  //   borderTopWidth: 1,
-  //   borderTopColor: "#ddd",
-  // },
-  navItem: {
-    alignItems: "center",
-  },
-  navText: {
-    fontSize: 12,
-    color: "#777",
-  },
+  serviceText: { fontSize: 14, fontWeight: "bold", marginTop: 5 },
 });
 
 export default HomeScreen;

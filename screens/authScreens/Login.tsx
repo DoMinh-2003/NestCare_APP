@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,113 +7,33 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { GoogleSocialButton } from "react-native-social-buttons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Google from "expo-auth-session/providers/google";
-import { signInWithCredential, GoogleAuthProvider } from "firebase/auth";
+import { useNavigation } from "expo-router";
+import { GoogleSocialButton } from "react-native-social-buttons";
 import { auth } from "@/config/firebase";
-import { router, useNavigation } from "expo-router";
+import { showMessage } from "react-native-flash-message";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { login } from "@/redux/features/userSlice";
-import { RootStackParamList } from "@/model/NavigationType";
-import * as AuthSession from "expo-auth-session";
-import Authentication from "@/service/Authentication";
-import { Button, ButtonText } from "@/components/ui/button";
-// import { signIn } from "../../service/Authentication";
 import { Login2 } from "@/service/userService";
-// import Toast from "react-native-toast-message";
-import { showMessage } from "react-native-flash-message";
+// import { Ionicons } from "@expo/vector-icons";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFF5F5",
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  logoContainer: {
-    alignItems: "center",
-    marginBottom: 30,
-  },
-  logo: {
-    width: 150,
-    height: 150,
-    resizeMode: "contain",
-  },
-  inputContainer: {
-    paddingHorizontal: 20,
-    width: "100%",
-    gap: 15,
-  },
-  input: {
-    backgroundColor: "white",
-    padding: 15,
-    borderRadius: 25,
-    fontSize: 16,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  loginButton: {
-    backgroundColor: "#FF6B6B",
-    paddingVertical: 15,
-    borderRadius: 25,
-    alignItems: "center",
-    marginTop: 20,
-  },
-  loginText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  dividerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 20,
-    paddingHorizontal: 20,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#D5D5D7",
-  },
-  dividerText: {
-    marginHorizontal: 10,
-    color: "#666",
-  },
-  googleSocialButton: {
-    borderWidth: 1,
-    borderColor: "#D5D5D7",
-    borderRadius: 25,
-    width: "85%",
-    height: 47,
-    alignSelf: "center",
-  },
-  error: {
-    color: "red",
-    marginTop: 10,
-    textAlign: "center",
-  },
-});
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Fontisto from "@expo/vector-icons/Fontisto";
 
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { Divider } from "react-native-paper";
+import { Button, ButtonText } from "@/components/ui/button";
 const Login = () => {
   const insets = useSafeAreaInsets();
-  const { loginGoogle } = Authentication();
   const dispatch = useDispatch();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  // const [email, setEmail] = useState("");
+  const navigation = useNavigation();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     iosClientId:
@@ -123,148 +44,266 @@ const Login = () => {
       "392832910333-g0gd0no6t0gan5560qeornescgku17ij.apps.googleusercontent.com",
   });
 
-  const loginGG = async () => {
-    if (response?.type === "success") {
-      navigation.navigate("tabs");
-      // const { authentication } = response;
-      // const credential = await GoogleAuthProvider.credential(
-      //   authentication?.idToken,
-      //   authentication?.accessToken
-      // );
-      // try {
-      //   const res = await signInWithCredential(auth, credential);
-      //   const { accessToken }: any = res.user;
-      //   const response = await loginGoogle(accessToken);
-      //   const { data } = response;
-      //   dispatch(login(data));
-      //   await AsyncStorage.setItem("token", data.token);
-      //   navigation.navigate("Home");
-      //   if (data.role == "STUDENT") {
-      //     navigation.navigate("Login");
-      //   } else {
-      //     navigation.navigate("Profile");
-      //   }
-      // } catch (error) {
-      //   console.error(error);
-      // }
-    }
-  };
-
   const handleLogin = async () => {
     try {
       const res = await Login2(username, password);
-      console.log("res", res);
-
       if (res?.token) {
-        // Save token to AsyncStorage
         await AsyncStorage.setItem("token", res.token);
-
-        // Create a complete User object that satisfies your interface
-        const userData = {
-          // Include the properties from the API response
-          token: res.token,
-          username: res.username,
-          email: res.email,
-          fullName: res.fullName,
-
-          // Add the missing required properties with default values
-          id: res.id || "", // Use empty string if ID is not provided
-          phone: res.phone || "",
-          role: res.role || "user", // Default role
-          isDeleted: res.isDeleted || false,
-        };
-
-        // Dispatch login action with the complete user data
-        dispatch(login(userData));
-
+        dispatch(login(res));
         showMessage({
           message: "Xin chào 👋",
-          description: `${res.fullName} đã đăng nhập thành công!`,
+          description: `${res.fullName} đăng nhập thành công!`,
           type: "success",
-          icon: "success",
-          duration: 3000, // 2 seconds
         });
-
         navigation.replace("tabs");
       } else {
-        setError("Login failed. Invalid credentials.");
+        setError("Invalid credentials. Please try again.");
       }
     } catch (error) {
       console.error(error);
-      setError("Login failed. Please try again.");
+      showMessage({
+        message: "Đăng nhập không thành công. Vui lòng thử lại.",
+        description: `${error} `,
+        type: "danger",
+      });
+      setError("Đăng nhập không thành công. Vui lòng thử lại.");
     }
   };
 
-  useEffect(() => {
-    loginGG();
-  }, [response]);
-
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.logoContainer}>
-        <Image
-          source={require("@/assets/images/baby-logo.png")}
-          style={styles.logo}
-        />
-        <Text className="text-xl font-semibold text-center mb-2">Nestcare</Text>
-      </View>
-
+      <Image
+        source={require("../../assets/images/baby-logo.png")}
+        style={styles.logo}
+      />
+      <Text style={styles.title}>
+        Đăng nhập với <Text style={styles.tittlecolor}>NESTCARE</Text>
+      </Text>
       <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
-          // keyboardType="email-address"
-          autoCapitalize="none"
-        />
+        <View style={styles.inputWrapper}>
+          {/* <Ionicons
+              name="mail-outline"
+              size={24}
+              color="#666"
+              style={styles.icon}
+            /> */}
+          <FontAwesome
+            name="user"
+            size={24}
+            style={styles.icon}
+            color="#F37199"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Tên đăng nhập"
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
+          />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+          <TouchableOpacity
+            onPress={() => setSecureTextEntry(!secureTextEntry)}
+          >
+            <Ionicons
+              name={secureTextEntry ? "eye-off" : "eye"}
+              size={24}
+              color="#F37199"
+              style={{ opacity: 0, height: 0 }}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.inputWrapper}>
+          <Fontisto
+            name="locked"
+            size={24}
+            style={styles.icon}
+            color="#F37199"
+          />
+          {/* <Ionicons
+              name="lock-closed-outline"
+              size={24}
+              color="#F37199"
+              style={styles.icon}
+            /> */}
+          <TextInput
+            style={styles.input}
+            placeholder="Mật khẩu"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={secureTextEntry}
+          />
 
-        {error ? <Text style={styles.error}>{error}</Text> : null}
-
+          <TouchableOpacity
+            onPress={() => setSecureTextEntry(!secureTextEntry)}
+          >
+            <Ionicons
+              name={secureTextEntry ? "eye-off" : "eye"}
+              size={24}
+              color="#F37199"
+              style={styles.iconRight}
+            />
+          </TouchableOpacity>
+        </View>
+        {/* {error ? <Text style={styles.error}>{error}</Text> : null} */}
         <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
-          <Text style={styles.loginText}>Login</Text>
+          <Text style={styles.loginText}>Đăng nhập</Text>
         </TouchableOpacity>
-
-        {/* <TouchableOpacity
-          onPress={() => navigation.replace("tabs")} // Điều hướng sang homepage
-          style={[styles.loginButton, { backgroundColor: "#4CAF50" }]} // Thay đổi màu cho dễ phân biệt
-        >
-          <Text style={styles.loginText}>Go to Homepage</Text>
-        </TouchableOpacity> */}
+        <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
+      </View>
+      {/* <Text style={styles.orText}>
+        ----------------------------------------------
+      </Text> */}
+      {/* <View style={styles.socialButtonsContainer}>
+          <GoogleSocialButton onPress={() => promptAsync()} />
+        </View>
 
         <View style={styles.dividerContainer}>
           <View style={styles.divider} />
-          <Text style={styles.dividerText}>or</Text>
+          <View style={styles.textContainer}>
+            <Text style={styles.dividerText}>Or</Text>
+          </View>
           <View style={styles.divider} />
-        </View>
+        </View> */}
 
-        <Button onPress={() => navigation.replace("signup")}>
-          <ButtonText>Create Account</ButtonText>
-        </Button>
+      {/* <Divider style={{ height: 100, backgroundColor: "black" }} /> */}
 
-        <GoogleSocialButton
-          onPress={() => promptAsync()}
-          buttonText="Continue with Google"
-          logoStyle={{
-            height: 25,
-            width: 25,
-          }}
-          buttonViewStyle={styles.googleSocialButton}
-          textStyle={{
-            fontSize: 16,
-          }}
-        />
-      </View>
+      {/* <Button onPress={() => navigation.replace("signup")}>
+        <ButtonText>Create Account</ButtonText>
+      </Button> */}
+
+      <TouchableOpacity
+        onPress={() => navigation.replace("signup")}
+        // style={styles.signupLink}
+      >
+        <Text style={styles.signupText}>
+          Bạn chưa có tài khoản?
+          <Text style={styles.signupLink}> Đăng ký</Text>
+        </Text>
+      </TouchableOpacity>
+
+      {/* 
+      <TouchableOpacity
+        style={styles.loginLink}
+        onPress={() => navigation.navigate("login")}
+      >
+        <Text style={styles.loginLinkText}>Already have an account? Login</Text>
+      </TouchableOpacity> */}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFF5F5",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+  },
+  logo: {
+    width: 180,
+    height: 180,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#000",
+  },
+  inputContainer: {
+    width: "100%",
+  },
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 25,
+  },
+  input: {
+    flex: 1,
+    fontSize: 18,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 25,
+    // borderWidth: 1, // Add border width
+    // borderColor: "#ccc", // Light grey border
+    // backgroundColor: "#ffffff", // Ensure white background
+  },
+
+  icon: {
+    marginRight: 10,
+  },
+  iconRight: {
+    marginLeft: 10,
+  },
+  loginButton: {
+    backgroundColor: "#F37199",
+    paddingVertical: 18,
+    alignItems: "center",
+    marginBottom: 10,
+    marginTop: 10,
+
+    borderRadius: 25,
+  },
+  loginText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  forgotPassword: {
+    color: "#4A56E2",
+    textAlign: "right",
+    marginBottom: 5,
+    fontSize: 18,
+    fontWeight: 500,
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  error: {
+    color: "red",
+    marginTop: 10,
+    textAlign: "center",
+    marginBottom: 10,
+    fontSize: 18,
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  divider: {
+    flex: 1,
+    height: 10,
+    backgroundColor: "#red",
+  },
+  textContainer: {
+    paddingHorizontal: 10,
+    backgroundColor: "white", // Match background to avoid overlap
+  },
+  dividerText: {
+    fontSize: 14,
+    color: "#888",
+    textAlign: "center",
+  },
+  orText: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  signupText: {
+    fontSize: 18,
+    // fontWeight: "bold",
+  },
+  signupLink: {
+    fontSize: 18,
+    color: "#F37199",
+    fontWeight: "bold",
+  },
+  tittlecolor: {
+    color: "#F37199",
+  },
+});
 
 export default Login;

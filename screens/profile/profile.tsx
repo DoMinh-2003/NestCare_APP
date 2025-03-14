@@ -126,9 +126,9 @@ const ProfileScreen: React.FC = () => {
       showMessage({
         message: "Chào tạm biệt 👋",
         description: `${username} đã đăng xuất thành công!`,
-        type: "none",
-        icon: "none",
-        backgroundColor: "red", // background color
+        type: "info",
+        icon: "info",
+        // backgroundColor: "yellow", // background color
         duration: 3000, // 2 seconds
       });
 

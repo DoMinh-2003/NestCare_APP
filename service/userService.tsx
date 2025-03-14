@@ -102,3 +102,19 @@ export const getDetailServiceByID = async (id: string) => {
     console.log(error);
   }
 };
+
+export const getAllRoleDoctor = async (role: string) => {
+  try {
+    const response = await axiosInstance.get(`/users/role/doctor`, {
+      params: { role },
+    });
+
+    console.log("====================================");
+    console.log("getAllRoleDoctor", response);
+    console.log("====================================");
+
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
