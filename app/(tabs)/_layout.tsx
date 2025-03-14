@@ -47,7 +47,7 @@ const HomeTabs = () => {
                   width: 70,
                   height: 70,
                   borderRadius: 35,
-                  backgroundColor: "pink",
+                  backgroundColor: "#F37199",
                   justifyContent: "center",
                   alignItems: "center",
                   marginBottom: 50,
@@ -69,7 +69,7 @@ const HomeTabs = () => {
             </Animated.View>
           );
         },
-        tabBarActiveTintColor: "pink",
+        tabBarActiveTintColor: "#F37199",
         tabBarInactiveTintColor: "gray",
         tabBarLabelStyle: { fontSize: 12, fontWeight: "bold" },
         tabBarStyle: {
@@ -81,7 +81,7 @@ const HomeTabs = () => {
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{ title: "Home" }}
+        options={{ title: "Home", headerShown: false }}
       />
       <Tab.Screen
         name="Community"

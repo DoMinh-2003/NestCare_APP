@@ -89,8 +89,8 @@ const Signup = () => {
 
       <View style={styles.inputContainer}>
         <View style={styles.inputWrapper}>
-          <MaterialIcons
-            name="person"
+          <FontAwesome
+            name="user"
             size={24}
             style={styles.icon}
             color="#F37199"
@@ -227,7 +227,7 @@ const Signup = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF5F5",
+    backgroundColor: "#FFCCE1",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "white",
-    padding: 15,
+    padding: 10,
     marginBottom: 10,
     borderRadius: 25,
   },

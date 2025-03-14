@@ -195,7 +195,7 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF5F5",
+    backgroundColor: "#FFCCE1",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
@@ -218,14 +218,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "white",
-    padding: 15,
+    padding: 10,
     marginBottom: 10,
     borderRadius: 25,
   },
   input: {
     flex: 1,
     fontSize: 18,
-    paddingVertical: 10,
+    paddingVertical: 5,
     paddingHorizontal: 15,
     borderRadius: 25,
     // borderWidth: 1, // Add border width
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 500,
     paddingTop: 10,
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   error: {
     color: "red",

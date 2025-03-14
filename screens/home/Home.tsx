@@ -1,51 +1,138 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import React, { useEffect, useState, useCallback, useRef } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Keyboard,
+  Animated,
+} from "react-native";
 import { getAllRoleDoctor } from "@/service/userService";
+import Service2 from "../service/Service2";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const HomeScreen = () => {
   const [doctors, setDoctors] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [finalSearch, setFinalSearch] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchWidth = useRef(new Animated.Value(0)).current;
+  const fullName = useSelector((state: RootState) => state.user?.fullName);
 
-  // Memoized function to fetch doctors
   const fetchDoctors = useCallback(async () => {
     const doctorList = await getAllRoleDoctor("doctor");
-    setDoctors(doctorList); // ✅ Now correctly setting only doctor list
+    setDoctors(doctorList);
   }, []);
 
   useEffect(() => {
     fetchDoctors();
   }, [fetchDoctors]);
 
-  const services = [
-    { id: 1, name: "Ultrasound", icon: "medical-services" },
-    { id: 2, name: "Prenatal Checkup", icon: "pregnant-woman" },
-    { id: 3, name: "Nutrition Counseling", icon: "restaurant" },
-    { id: 4, name: "Yoga Classes", icon: "self-improvement" },
-  ];
+  const handleSearch = () => {
+    setFinalSearch(searchQuery.trim());
+    Keyboard.dismiss();
+  };
 
-  const upcomingAppointment = {
-    doctor: "Dr. Anna Nguyen",
-    date: "March 20, 2025",
-    time: "10:00 AM",
+  const clearSearch = () => {
+    setSearchQuery("");
+    setFinalSearch("");
+  };
+
+  const toggleSearchBar = () => {
+    if (isSearchOpen) {
+      Animated.timing(searchWidth, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start(() => setIsSearchOpen(false));
+    } else {
+      setIsSearchOpen(true);
+      Animated.timing(searchWidth, {
+        toValue: 250,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    }
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Header */}
+      <View style={styles.headerContainer}>
+        <Image
+          source={{
+            uri: "https://i.pravatar.cc/300", // Placeholder avatar
+          }}
+          style={styles.avatar}
+        />
+        {isSearchOpen ? (
+          <Animated.View
+            style={[styles.searchContainer, { width: searchWidth }]}
+          >
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Tìm kiếm dịch vụ ..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                returnKeyType="search"
+                onSubmitEditing={handleSearch}
+              />
+              {searchQuery ? (
+                <TouchableOpacity
+                  onPress={clearSearch}
+                  style={styles.clearButton}
+                >
+                  <Icon name="times-circle" size={20} color="grey" />
+                </TouchableOpacity>
+              ) : null}
+              <TouchableOpacity
+                onPress={handleSearch}
+                style={styles.searchButton}
+              >
+                <Text style={styles.searchButtonText}>
+                  <Icon name={"search"} size={20} color="white" />
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
+        ) : (
+          <Text style={styles.greeting}>
+            Xìn chào, <Text style={{ color: "#F37199" }}>{fullName}</Text>
+          </Text>
+        )}
+
+        <TouchableOpacity onPress={toggleSearchBar} style={styles.searchIcon}>
+          <Icon
+            name={isSearchOpen ? "caret-left" : "search"}
+            size={20}
+            // color="#white"
+          />
+        </TouchableOpacity>
+      </View>
+
       {/* Upcoming Appointment */}
       <View style={styles.upcomingContainer}>
-        <Text style={styles.sectionTitle}>Upcoming Appointment</Text>
+        <Text style={styles.sectionTitle}>Cuộc hẹn sắp tới</Text>
         <View style={styles.appointmentCard}>
-          <Text style={styles.appointmentText}>
-            {upcomingAppointment.doctor}
-          </Text>
-          <Text style={styles.appointmentText}>
-            {upcomingAppointment.date} at {upcomingAppointment.time}
-          </Text>
+          <Text style={styles.appointmentText}>Dr. Anna Nguyen</Text>
+          <Text style={styles.appointmentText}>March 20, 2025 at 10:00 AM</Text>
         </View>
       </View>
 
+      {/* Services */}
+      <Text style={styles.sectionTitle}>Dịch vụ hiện có</Text>
+      <View style={styles.servicesContainer}>
+        <Service2 searchQuery={finalSearch} />
+      </View>
+
       {/* List of Doctors */}
-      <Text style={styles.sectionTitle}>Doctors</Text>
+      <Text style={styles.sectionTitle}>Bác sĩ nổi bật</Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -71,62 +158,78 @@ const HomeScreen = () => {
           <Text style={styles.noDoctorText}>No doctors available</Text>
         )}
       </ScrollView>
-
-      {/* Services */}
-      <Text style={styles.sectionTitle}>Services</Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.serviceScroll}
-      >
-        {services.map((service) => (
-          <View key={service.id} style={styles.serviceCard}>
-            <Icon name={service.icon} size={40} color="#FF6F61" />
-            <Text style={styles.serviceText}>{service.name}</Text>
-          </View>
-        ))}
-      </ScrollView>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#FFF" },
+  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  avatar: { width: 40, height: 40, borderRadius: 20 },
+  greeting: { fontSize: 18, fontWeight: "bold", flex: 1, marginLeft: 10 },
+  searchIcon: { padding: 10 },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    backgroundColor: "#f9f9f9",
+    overflow: "hidden",
+    height: 40,
+    width: "100%",
+    alignSelf: "flex-start",
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    paddingHorizontal: 10,
+  },
+  clearButton: { margin: 5 },
   sectionTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
   upcomingContainer: { marginBottom: 20 },
   appointmentCard: {
-    backgroundColor: "#FFEBEE",
+    backgroundColor: "#FFCCE1",
     padding: 15,
     borderRadius: 10,
   },
   appointmentText: { fontSize: 16, fontWeight: "bold" },
-  doctorScroll: { marginBottom: 20 },
+  doctorScroll: { marginBottom: 20, paddingLeft: 5 },
   doctorCard: {
     alignItems: "center",
     marginRight: 15,
-    backgroundColor: "#F8F8F8",
     padding: 10,
     borderRadius: 10,
+    backgroundColor: "#FFCCE1",
+    borderWidth: 1,
+    borderColor: "#ddd",
   },
-  doctorImage: {
-    width: 160,
-    height: 160,
-    borderRadius: 40,
-    marginBottom: 5,
+  doctorImage: { width: 120, height: 120, borderRadius: 60, marginBottom: 5 },
+  doctorName: { fontSize: 14, fontWeight: "bold", textAlign: "center" },
+  doctorSpecialty: { fontSize: 12, color: "gray", textAlign: "center" },
+  noDoctorText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "gray",
+    textAlign: "center",
   },
-
-  doctorName: { fontSize: 14, fontWeight: "bold" },
-  doctorSpecialty: { fontSize: 12, color: "gray" },
-  noDoctorText: { fontSize: 14, fontWeight: "bold", color: "gray" },
-  serviceScroll: { marginBottom: 20 },
-  serviceCard: {
-    alignItems: "center",
-    marginRight: 15,
-    padding: 15,
-    borderRadius: 10,
-    backgroundColor: "#FFF5F5",
+  servicesContainer: { paddingBottom: 20 },
+  searchButton: {
+    backgroundColor: "#F37199",
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
   },
-  serviceText: { fontSize: 14, fontWeight: "bold", marginTop: 5 },
+  searchButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
 });
 
 export default HomeScreen;
