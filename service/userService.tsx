@@ -118,3 +118,20 @@ export const getAllRoleDoctor = async (role: string) => {
     console.log(error);
   }
 };
+
+export const UserOrder = async (userId: string, packageId : string) => {
+  try {
+    const response = await axiosInstance.post("/order", {
+      userId,
+      packageId,
+    });
+
+    console.log("====================================");
+    console.log("UserOrder", response);
+    console.log("====================================");
+
+    return response;
+  } catch (error) {
+    console.error("Error User Order:", error);
+  }
+};

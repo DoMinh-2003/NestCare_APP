@@ -57,6 +57,8 @@ const ProfileScreen: React.FC = () => {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const username = useSelector((state: RootState) => state.user?.username);
+  const email = useSelector((state: RootState) => state.user?.email);
+  const image = useSelector((state: RootState) => state.user?.image);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -145,10 +147,17 @@ const ProfileScreen: React.FC = () => {
 
       {/* User Info Section */}
       <View style={styles.userInfo}>
-        <Image source={{ uri: profileData.avatarUrl }} style={styles.avatar} />
+        <Image
+          source={{
+            uri:
+              image ||
+              "https://ykhoamia.com/wp-content/uploads/2015/12/B%C3%A1c-s%C4%A9-03.jpg",
+          }}
+          style={styles.avatar}
+        />
         <View style={styles.userDetails}>
-          <Text style={styles.name}>{profileData.name}</Text>
-          <Text style={styles.email}>{profileData.email}</Text>
+          <Text style={styles.name}>{username}</Text>
+          <Text style={styles.email}>{email}</Text>
         </View>
         <TouchableOpacity style={styles.editButton}>
           <Text style={styles.editButtonText}>Edit profile</Text>
@@ -365,7 +374,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "#ff3b3b",
+    backgroundColor: "#F37199",
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 25,

@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    resizeMode: "contain",
+    resizeMode: "cover",
     height: 120,
   },
   cardContent: {
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 14,
     fontWeight: "700",
-    color: "red",
+    color: "#006b85",
   },
   noServiceText: {
     textAlign: "center",

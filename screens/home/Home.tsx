@@ -15,6 +15,8 @@ import Service2 from "../service/Service2";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import AppointmentCard from "../service/AppointmentCard";
+import SubscriptionUI from "../packages/SubscriptionUI";
 
 const HomeScreen = () => {
   const [doctors, setDoctors] = useState([]);
@@ -23,6 +25,7 @@ const HomeScreen = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchWidth = useRef(new Animated.Value(0)).current;
   const fullName = useSelector((state: RootState) => state.user?.fullName);
+  const image = useSelector((state: RootState) => state.user?.image);
 
   const fetchDoctors = useCallback(async () => {
     const doctorList = await getAllRoleDoctor("doctor");
@@ -53,12 +56,14 @@ const HomeScreen = () => {
     } else {
       setIsSearchOpen(true);
       Animated.timing(searchWidth, {
-        toValue: 250,
+        toValue: 295,
         duration: 300,
         useNativeDriver: false,
       }).start();
     }
   };
+
+  
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -66,8 +71,15 @@ const HomeScreen = () => {
       <View style={styles.headerContainer}>
         <Image
           source={{
-            uri: "https://i.pravatar.cc/300", // Placeholder avatar
+            uri:
+              image ||
+              "https://ykhoamia.com/wp-content/uploads/2015/12/B%C3%A1c-s%C4%A9-03.jpg",
           }}
+          // source={{
+          //   // uri: "https://i.pravatar.cc/300", // Placeholder avatar
+          //   uri: "https://ykhoamia.com/wp-content/uploads/2015/12/B%C3%A1c-s%C4%A9-03.jpg", // Placeholder avatar
+          // }}
+          resizeMode="contain"
           style={styles.avatar}
         />
         {isSearchOpen ? (
@@ -103,27 +115,31 @@ const HomeScreen = () => {
           </Animated.View>
         ) : (
           <Text style={styles.greeting}>
-            Xìn chào, <Text style={{ color: "#F37199" }}>{fullName}</Text>
+            Xin chào, <Text style={{ color: "#F37199" }}>{fullName}</Text>
           </Text>
         )}
 
         <TouchableOpacity onPress={toggleSearchBar} style={styles.searchIcon}>
           <Icon
             name={isSearchOpen ? "caret-left" : "search"}
-            size={20}
+            size={24}
             // color="#white"
           />
         </TouchableOpacity>
       </View>
 
       {/* Upcoming Appointment */}
-      <View style={styles.upcomingContainer}>
+      {/* <View style={styles.upcomingContainer}>
         <Text style={styles.sectionTitle}>Cuộc hẹn sắp tới</Text>
         <View style={styles.appointmentCard}>
           <Text style={styles.appointmentText}>Dr. Anna Nguyen</Text>
           <Text style={styles.appointmentText}>March 20, 2025 at 10:00 AM</Text>
         </View>
-      </View>
+      </View> */}
+
+      <AppointmentCard />
+
+      {/* <SubscriptionUI /> */}
 
       {/* Services */}
       <Text style={styles.sectionTitle}>Dịch vụ hiện có</Text>
@@ -169,25 +185,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 20,
+    height: 56,
   },
-  avatar: { width: 40, height: 40, borderRadius: 20 },
+  avatar: { width: 56, height: 56, borderRadius: 20 },
   greeting: { fontSize: 18, fontWeight: "bold", flex: 1, marginLeft: 10 },
-  searchIcon: { padding: 10 },
+  searchIcon: { paddingTop: 10, paddingRight: 10, paddingBottom: 10 },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
     backgroundColor: "#f9f9f9",
     overflow: "hidden",
-    height: 40,
+    height: 45,
     width: "100%",
-    alignSelf: "flex-start",
+    alignSelf: "center",
   },
   searchInput: {
     flex: 1,
-    height: 40,
+    height: 45,
     paddingHorizontal: 10,
   },
   clearButton: { margin: 5 },
