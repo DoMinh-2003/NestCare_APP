@@ -18,6 +18,8 @@ import FlashMessage from "react-native-flash-message";
 import Signup from "@/screens/authScreens/Signup";
 import Service from "@/screens/service/Service";
 import DetailService from "@/screens/service/DetailService";
+import OrderStatus from "@/screens/service/OrderStatus";
+import EditProfileScreen from "@/screens/profile/EditProfileScreen";
 // Define Screens
 
 // Navigators
@@ -34,13 +36,15 @@ const HomeTabs = () => {
           let iconName: keyof typeof Ionicons.glyphMap = "home"; // Default
 
           const scale = new Animated.Value(focused ? 1.2 : 1);
-
+          {
+            /* <Ionicons name="gift-sharp" size={24} color="black" />; */
+          }
           if (route.name === "Community") iconName = "people";
           else if (route.name === "Appointment") iconName = "calendar";
-          else if (route.name === "Packages") iconName = "heart";
+          else if (route.name === "Packages") iconName = "gift-sharp";
           else if (route.name === "Profile") iconName = "person";
 
-          if (route.name === "Appointment") {
+          if (route.name === "Packages") {
             return (
               <View
                 style={{
@@ -83,20 +87,21 @@ const HomeTabs = () => {
         component={HomeScreen}
         options={{ title: "Home", headerShown: false }}
       />
-      <Tab.Screen
-        name="Community"
-        component={CommunityScreen}
-        options={{ title: "Community" }}
-      />
+
       <Tab.Screen
         name="Appointment"
-        component={Service}
+        component={OrderStatus}
         options={{ title: "Appointment" }}
       />
       <Tab.Screen
         name="Packages"
         component={Packages}
         options={{ title: "Packages" }}
+      />
+      <Tab.Screen
+        name="Community"
+        component={CommunityScreen}
+        options={{ title: "Community" }}
       />
       <Tab.Screen
         name="Profile"
@@ -125,6 +130,16 @@ export default function AppNavigator() {
         <Stack.Screen
           name="DetailService"
           component={DetailService}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="OrderStatus"
+          component={OrderStatus}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="EditProfileScreen"
+          component={EditProfileScreen}
           options={{ headerShown: true }}
         />
         <Stack.Screen

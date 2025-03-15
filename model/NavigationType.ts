@@ -3,4 +3,6 @@ export type RootStackParamList = {
    signup: undefined;
     DetailService: { serviceId: string };
   login: undefined;
+  EditProfileScreen: undefined;
+  OrderStatus: undefined;
 };

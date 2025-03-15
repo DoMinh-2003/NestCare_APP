@@ -14,7 +14,7 @@ import { useNavigation } from "expo-router";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { UserOrder } from "@/service/userService";
-
+import MaterialIcons2 from "@expo/vector-icons/MaterialIcons";
 interface Service {
   id: string;
   name: string;
@@ -49,7 +49,6 @@ const Packages: React.FC = () => {
   const navigation = useNavigation();
 
   const id = useSelector((state: RootState) => state.user?.id);
-
 
   useEffect(() => {
     const fetchPackages = async () => {
@@ -86,37 +85,43 @@ const Packages: React.FC = () => {
     );
   }
 
-
-const handleBuy = async (packageId: string) => {
-  if (!id) {
-    console.error("User ID is missing.");
-    return;
-  }
-  try {
-    const response = await UserOrder(id, packageId);
-
-    console.log(response);
-    if (response) {
-      const paymentUrl = response;
-
-      // Kiểm tra nếu đang chạy trên Web thì dùng window.open
-      if (Platform.OS === "web") {
-        window.open(paymentUrl, "_blank"); // Mở VNPay trên tab mới của trình duyệt
-      } else {
-        Linking.openURL(paymentUrl); // Mở VNPay trên trình duyệt điện thoại
-      }
-    } else {
-      alert("Đặt hàng thất bại, vui lòng thử lại!");
+  const handleBuy = async (packageId: string) => {
+    if (!id) {
+      console.error("User ID is missing.");
+      return;
     }
-  } catch (error) {
-    console.error("Error placing order:", error);
-    alert("Đã xảy ra lỗi. Vui lòng thử lại.");
-  }
-};
+    try {
+      const response = await UserOrder(id, packageId);
 
+      console.log(response);
+      if (response) {
+        const paymentUrl = response;
+
+        // Kiểm tra nếu đang chạy trên Web thì dùng window.open
+        if (Platform.OS === "web") {
+          window.open(paymentUrl, "_blank"); // Mở VNPay trên tab mới của trình duyệt
+        } else {
+          Linking.openURL(paymentUrl); // Mở VNPay trên trình duyệt điện thoại
+        }
+      } else {
+        alert("Đặt hàng thất bại, vui lòng thử lại!");
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+    }
+  };
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity
+        // key={item.id}
+        style={styles.containerheader}
+        onPress={() => navigation.navigate("OrderStatus", {})}
+      >
+        <MaterialIcons2 name="history" size={28} color="white" />
+        <Text style={styles.headerText}>Lịch sử giao dịch</Text>
+      </TouchableOpacity>
       <FlatList
         data={packages}
         keyExtractor={(item) => item.id}
@@ -219,6 +224,26 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#F9F9F9",
+  },
+  headerText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  containerheader: {
+    backgroundColor: "#F37199",
+    borderRadius: 12,
+    padding: 15,
+    width: "100%",
+    alignSelf: "center",
+    marginBottom: 20,
+    elevation: 3, // Shadow effect for Android
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    flexDirection: "row",
   },
   titleContainer: {
     flexDirection: "row",

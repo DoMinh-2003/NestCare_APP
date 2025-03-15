@@ -119,7 +119,7 @@ export const getAllRoleDoctor = async (role: string) => {
   }
 };
 
-export const UserOrder = async (userId: string, packageId : string) => {
+export const UserOrder = async (userId: string, packageId: string) => {
   try {
     const response = await axiosInstance.post("/order", {
       userId,
@@ -133,5 +133,21 @@ export const UserOrder = async (userId: string, packageId : string) => {
     return response;
   } catch (error) {
     console.error("Error User Order:", error);
+  }
+};
+
+export const StatusOrder = async (status: string) => {
+  try {
+    const response = await axiosInstance.get(`/order/status/${status}`, {
+      params: { status },
+    });
+
+    console.log("====================================");
+    console.log("StatusOrder", response);
+    console.log("====================================");
+
+    return response;
+  } catch (error) {
+    console.log(error);
   }
 };

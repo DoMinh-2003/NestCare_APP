@@ -19,7 +19,7 @@ import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/n
 import { RootStackParamList } from "@/model/NavigationType";
 import { showMessage } from "react-native-flash-message";
 import { RootState } from "../../redux/store";
-
+import AntDesign from "@expo/vector-icons/AntDesign";
 interface ProfileModel {
   name: string;
   email: string;
@@ -38,13 +38,13 @@ interface Option {
 }
 
 const fixedOptions: Option[] = [
-  { icon: "🤰", text: "Pregnancy settings" },
-  { icon: "📤", text: "Export data" },
-  { icon: "🔄", text: "Restore data" },
-  { icon: "📊", text: "Graphs & reports" },
-  { icon: "🔒", text: "App lock" },
-  { icon: "⏰", text: "Reminder" },
-  { icon: "❓", text: "Support" },
+  { icon: "🤰", text: "Cài đặt thai kỳ" },
+  { icon: "📤", text: "Xuất dữ liệu" },
+  { icon: "🔄", text: "Khôi phục dữ liệu" },
+  { icon: "📊", text: "Biểu đồ & báo cáo" },
+  { icon: "🔒", text: "Khóa ứng dụng" },
+  { icon: "⏰", text: "Nhắc nhở" },
+  { icon: "❓", text: "Hỗ trợ" },
 ];
 
 const ProfileScreen: React.FC = () => {
@@ -67,11 +67,11 @@ const ProfileScreen: React.FC = () => {
           name: "Emily Johnson",
           email: "emilyjohnson@gmail.com",
           avatarUrl: "https://via.placeholder.com/50",
-          goals: ["Track cycle", "Get pregnant", "Track pregnancy"],
+          goals: ["Theo dõi chu kỳ", "Có thai", "Theo dõi thai kỳ"],
           premium: {
             active: true,
             title: "Nestcare Premium",
-            description: "You enjoying full access of Nestcare",
+            description: "Bạn đang tận hưởng đầy đủ quyền lợi của Nestcare",
           },
         };
         setProfileData(mockData);
@@ -159,14 +159,18 @@ const ProfileScreen: React.FC = () => {
           <Text style={styles.name}>{username}</Text>
           <Text style={styles.email}>{email}</Text>
         </View>
-        <TouchableOpacity style={styles.editButton}>
-          <Text style={styles.editButtonText}>Edit profile</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("EditProfileScreen", {})}
+          style={styles.editButton}
+        >
+          <AntDesign name="edit" size={18} color="white" />
+          <Text style={styles.editButtonText}>Chỉnh sửa</Text>
         </TouchableOpacity>
       </View>
 
       {/* My Goal Section */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>My goal</Text>
+        <Text style={styles.cardTitle}>Mục tiêu</Text>
         <View style={styles.goalOptions}>
           {profileData.goals.map((goal) => (
             <TouchableOpacity
@@ -220,7 +224,7 @@ const ProfileScreen: React.FC = () => {
         onPress={clearTokenAndLogStorage}
       >
         <Ionicons name="exit-outline" size={24} color="white" />
-        <Text style={styles.logoutText}>Logout</Text>
+        <Text style={styles.logoutText}>Đăng xuất</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -273,15 +277,20 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   editButton: {
+    // flex: 1,
+    flexDirection: "row",
     borderWidth: 1,
     borderColor: "#f287ff",
-    paddingVertical: 5,
+    paddingVertical: 10,
     paddingHorizontal: 10,
+    backgroundColor: "#F37199",
+    borderRadius: 10,
   },
   editButtonText: {
     fontSize: 14,
-    color: "#666",
+    color: "#fff",
     borderRadius: 10,
+    marginLeft: 5,
   },
   card: {
     backgroundColor: "#FFFFFF",

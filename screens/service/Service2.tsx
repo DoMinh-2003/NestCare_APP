@@ -132,7 +132,7 @@ const Service2 = ({ searchQuery }) => {
                 <Text style={styles.subtitle}>{item.provider}</Text>
                 <View style={styles.priceGroup}>
                   <Text style={styles.price}>
-                    {item.price.toLocaleString("vi-VN")} VND
+                    {new Intl.NumberFormat("vi-VN").format(item.price)} VND
                   </Text>
                 </View>
               </View>
