@@ -40,7 +40,7 @@ export const userSlice = createSlice({
   },
 });
 
-export const { login, logout /* updateProfile, refreshToken */ } = userSlice.actions;
+export const { login, logout,  updateProfile, refreshToken } = userSlice.actions;
 export default userSlice.reducer;
 
 // Selectors

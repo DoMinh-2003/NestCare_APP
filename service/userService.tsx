@@ -151,3 +151,69 @@ export const StatusOrder = async (status: string) => {
     console.log(error);
   }
 };
+
+export const UserChangeProfile = async (
+  id: string,
+  email: string,
+  image: string,
+  fullName: string,
+  phone: number,
+  role: string
+) => {
+  try {
+    const response = await axiosInstance.put(`/users/${id}`, {
+      email,
+      image,
+      fullName,
+      phone,
+      role,
+    });
+
+    console.log("====================================");
+    console.log("UserChangeProfile", response);
+    console.log("====================================");
+
+    return response;
+  } catch (error) {
+    console.error("Error User Change Profile:", error);
+  }
+};
+
+export const GetProfile = async (id: string) => {
+  try {
+    const response = await axiosInstance.get(`/users/${id}`, {
+      // params: { status },
+    });
+
+    console.log("====================================");
+    console.log("GetProfile", response);
+    console.log("====================================");
+
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const uploadImage = async (imageUri: string) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", {
+      uri: imageUri,
+      name: "profile.jpg",
+      type: "image/jpeg",
+    });
+
+    const response = await fetch("YOUR_IMAGE_UPLOAD_API_URL", {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await response.json();
+    return result.url; // API should return the image URL
+  } catch (error) {
+    console.error("Image upload failed:", error);
+    return null;
+  }
+};
+

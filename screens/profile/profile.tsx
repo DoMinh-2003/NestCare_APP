@@ -59,6 +59,8 @@ const ProfileScreen: React.FC = () => {
   const username = useSelector((state: RootState) => state.user?.username);
   const email = useSelector((state: RootState) => state.user?.email);
   const image = useSelector((state: RootState) => state.user?.image);
+  const id = useSelector((state: RootState) => state.user?.id);
+  const fullName = useSelector((state: RootState) => state.user?.fullName);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -127,7 +129,7 @@ const ProfileScreen: React.FC = () => {
 
       showMessage({
         message: "Chào tạm biệt 👋",
-        description: `${username} đã đăng xuất thành công!`,
+        description: `${fullName} đã đăng xuất thành công!`,
         type: "info",
         icon: "info",
         // backgroundColor: "yellow", // background color
@@ -143,7 +145,7 @@ const ProfileScreen: React.FC = () => {
   return (
     <ScrollView style={styles.container}>
       {/* Header Section */}
-      <View style={styles.header}></View>
+      {/* <View style={styles.header}></View> */}
 
       {/* User Info Section */}
       <View style={styles.userInfo}>
@@ -156,7 +158,7 @@ const ProfileScreen: React.FC = () => {
           style={styles.avatar}
         />
         <View style={styles.userDetails}>
-          <Text style={styles.name}>{username}</Text>
+          <Text style={styles.name}>{fullName}</Text>
           <Text style={styles.email}>{email}</Text>
         </View>
         <TouchableOpacity
@@ -197,14 +199,13 @@ const ProfileScreen: React.FC = () => {
       {/* MyFlow Premium Section */}
       <View style={styles.card}>
         <View style={styles.premiumSection}>
-          <Text>
-            <Text style={styles.premiumIcon}>✅ </Text>
+          <Text style={styles.premiumIcon}>✅</Text>
+          <View>
             <Text style={styles.premiumTitle}>{profileData.premium.title}</Text>
-            {"\n"}
             <Text style={styles.premiumText}>
               {profileData.premium.description}
             </Text>
-          </Text>
+          </View>
         </View>
       </View>
 

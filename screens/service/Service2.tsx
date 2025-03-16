@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 interface ServiceItem {
   id: string;
@@ -71,11 +72,10 @@ const Service2 = ({ searchQuery }) => {
 
   if (loading) {
     return (
-      <ActivityIndicator
-        size="large"
-        color="#0000ff"
-        style={{ marginTop: 20 }}
-      />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#F37199" />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
     );
   }
 
@@ -139,7 +139,11 @@ const Service2 = ({ searchQuery }) => {
             </TouchableOpacity>
           ))
         ) : (
-          <Text style={styles.noServiceText}>No services available</Text>
+          <View style={styles.noOrderContainer}>
+            <AntDesign name="inbox" size={50} color="#F37199" />
+            <Text style={styles.noOrderText}>No services available</Text>
+          </View>
+          // <Text style={styles.noServiceText}>No services available</Text>
         )}
       </ScrollView>
     </View>
@@ -160,6 +164,16 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
     backgroundColor: "#f9f9f9",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#F37199",
   },
   searchInput: {
     flex: 1,
@@ -229,8 +243,19 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     fontWeight: "bold",
-    color: "gray",
+    color: "#F37199",
     marginTop: 20,
+  },
+  noOrderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noOrderText: {
+    textAlign: "center",
+    fontSize: 16,
+    marginTop: 20,
+    color: "#F37199",
   },
 });
 
