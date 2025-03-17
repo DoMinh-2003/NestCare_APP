@@ -20,6 +20,8 @@ import Service from "@/screens/service/Service";
 import DetailService from "@/screens/service/DetailService";
 import OrderStatus from "@/screens/service/OrderStatus";
 import EditProfileScreen from "@/screens/profile/EditProfileScreen";
+import DetailDoctor from "@/screens/service/DetailDoctor";
+import PregnancyTracker from "@/screens/service/PregnancyTracker";
 // Define Screens
 
 // Navigators
@@ -100,7 +102,7 @@ const HomeTabs = () => {
       />
       <Tab.Screen
         name="Community"
-        component={CommunityScreen}
+        component={PregnancyTracker}
         options={{ title: "Community" }}
       />
       <Tab.Screen
@@ -132,6 +134,12 @@ export default function AppNavigator() {
           component={DetailService}
           options={{ headerShown: true }}
         />
+        <Stack.Screen
+          name="DetailDoctor"
+          component={DetailDoctor}
+          options={{ headerShown: true }}
+        />
+
         <Stack.Screen
           name="OrderStatus"
           component={OrderStatus}

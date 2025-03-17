@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import AppointmentCard from "../service/AppointmentCard";
 import SubscriptionUI from "../packages/SubscriptionUI";
+import { AntDesign } from "@expo/vector-icons";
 
 const HomeScreen = () => {
   const [doctors, setDoctors] = useState([]);
@@ -62,8 +63,6 @@ const HomeScreen = () => {
       }).start();
     }
   };
-
-  
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -152,26 +151,38 @@ const HomeScreen = () => {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={styles.doctorScroll}
+        contentContainerStyle={styles.doctorScroll}
       >
         {doctors.length > 0 ? (
           doctors.map((doctor) => (
-            <View key={doctor.id} style={styles.doctorCard}>
-              <Image
-                source={{
-                  uri:
-                    doctor.image ||
-                    "https://tamanhhospital.vn/wp-content/uploads/2020/12/duong-viet-bac-detail.png",
-                }}
-                style={styles.doctorImage}
-                resizeMode="contain"
-              />
-              <Text style={styles.doctorName}>{doctor.fullName}</Text>
-              <Text style={styles.doctorSpecialty}>{doctor.role}</Text>
-            </View>
+            <TouchableOpacity
+              key={item.id}
+              style={styles.card}
+              onPress={() =>
+                navigation.navigate("DetailDoctor", { serviceId: item.id })
+              }
+            >
+              <View key={doctor.id} style={styles.doctorCard}>
+                <Image
+                  source={{
+                    uri:
+                      doctor.image ||
+                      "https://tamanhhospital.vn/wp-content/uploads/2020/12/duong-viet-bac-detail.png",
+                  }}
+                  style={styles.doctorImage}
+                  resizeMode="contain"
+                />
+                <Text style={styles.doctorName}>{doctor.fullName}</Text>
+                <Text style={styles.doctorSpecialty}>{doctor.role}</Text>
+              </View>
+            </TouchableOpacity>
           ))
         ) : (
-          <Text style={styles.noDoctorText}>No doctors available</Text>
+          <View style={styles.noOrderContainer}>
+            <AntDesign name="inbox" size={50} color="#F37199" />
+            <Text style={styles.noOrderText}>Hiện không có bác sĩ</Text>
+          </View>
+          // <Text style={styles.noDoctorText}>No doctors available</Text>
         )}
       </ScrollView>
     </ScrollView>
@@ -181,6 +192,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#fff" },
   headerContainer: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -217,7 +229,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   appointmentText: { fontSize: 16, fontWeight: "bold" },
-  doctorScroll: { marginBottom: 20, paddingLeft: 5 },
+  doctorScroll: {
+    marginBottom: 20,
+    paddingLeft: 5,
+    flexGrow: 1,
+  },
   doctorCard: {
     alignItems: "center",
     marginRight: 15,
@@ -247,6 +263,17 @@ const styles = StyleSheet.create({
   searchButtonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  noOrderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noOrderText: {
+    textAlign: "center",
+    fontSize: 16,
+    marginTop: 20,
+    color: "#F37199",
   },
 });
 

@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  Text,
 } from "react-native";
 import { TextInput, Button, Avatar } from "react-native-paper";
 import * as ImagePicker from "react-native-image-picker";
@@ -20,12 +21,10 @@ const EditProfileScreen = ({ navigation }) => {
   // State variables
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [name, setName] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const [phone, setPhone] = useState<number>(0);
+  const [phone, setPhone] = useState<string>(""); // Fixed phone as string
   const [loading, setLoading] = useState<boolean>(true);
   const [updating, setUpdating] = useState<boolean>(false);
-
 
   const [originalProfile, setOriginalProfile] = useState({
     name: "",
@@ -33,50 +32,51 @@ const EditProfileScreen = ({ navigation }) => {
     phone: "",
     profileImage: null,
   });
+
   // Fetch user profile from API
-useEffect(() => {
-  const fetchProfile = async () => {
-    if (!userId) return;
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!userId) return;
 
-    try {
-      const response = await GetProfile(userId);
-      if (response) {
-        const userData = response;
+      try {
+        const response = await GetProfile(userId);
+        if (response) {
+          const userData = response;
 
-        setName(userData.fullName || "");
-        setEmail(userData.email || "");
-        setPhone(userData.phone?.toString() || "");
-        setProfileImage(userData.image || null);
+          setName(userData.fullName || "");
+          setEmail(userData.email || "");
+          setPhone(userData.phone?.toString() || ""); // Ensure phone is a string
+          setProfileImage(userData.image || null);
 
-        // Store original values
-        setOriginalProfile({
-          name: userData.fullName || "",
-          email: userData.email || "",
-          phone: userData.phone?.toString() || "",
-          profileImage: userData.image || null,
-        });
+          // Store original values
+          setOriginalProfile({
+            name: userData.fullName || "",
+            email: userData.email || "",
+            phone: userData.phone?.toString() || "",
+            profileImage: userData.image || null,
+          });
 
-        // Update Redux state
-        dispatch(updateProfile(userData));
+          // Update Redux state
+          dispatch(updateProfile(userData));
+        }
+      } catch (error) {
+        showMessage({ message: "Không thể tải hồ sơ", type: "danger" });
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      showMessage({ message: "Không thể tải hồ sơ", type: "danger" });
-    } finally {
-      setLoading(false);
-    }
+    };
+
+    fetchProfile();
+  }, [userId]);
+
+  const isChanged = () => {
+    return (
+      name !== originalProfile.name ||
+      email !== originalProfile.email ||
+      phone !== originalProfile.phone ||
+      profileImage !== originalProfile.profileImage
+    );
   };
-
-  fetchProfile();
-}, [userId]);
-
-const isChanged = () => {
-  return (
-    name !== originalProfile.name ||
-    email !== originalProfile.email ||
-    phone !== originalProfile.phone ||
-    profileImage !== originalProfile.profileImage
-  );
-};
 
   // Handle image picker
   const handleImagePick = () => {
@@ -116,8 +116,6 @@ const isChanged = () => {
       return;
     }
 
-    
-
     setUpdating(true);
 
     try {
@@ -141,7 +139,6 @@ const isChanged = () => {
         );
 
         showMessage({ message: "Cập nhật thành công!", type: "success" });
-        // navigation.goBack();
       }
     } catch (error) {
       console.error("Profile update failed:", error);
@@ -197,6 +194,7 @@ const isChanged = () => {
           />
         </TouchableOpacity>
       </View>
+
       {/* Form Fields */}
       <TextInput
         label="Họ và tên"
@@ -204,19 +202,10 @@ const isChanged = () => {
         onChangeText={setName}
         mode="outlined"
       />
-      {/* <TextInput
-        label="Tên đăng nhập"
-        value={username}
-        onChangeText={setUsername}
-        mode="outlined"
-        style={styles.input}
-      /> */}
       <TextInput
         label="Email"
         value={email}
-        onChangeText={(text) => {
-          setEmail(text);
-        }}
+        onChangeText={(text) => setEmail(text)}
         onBlur={() => {
           if (!isValidEmail(email)) {
             showMessage({ message: "Email không hợp lệ!", type: "warning" });
@@ -224,20 +213,21 @@ const isChanged = () => {
         }}
         mode="outlined"
         keyboardType="email-address"
-        autoCapitalize="none" // Tránh viết hoa tự động
+        autoCapitalize="none"
         style={styles.input}
       />
       <TextInput
         label="Số điện thoại"
         value={phone}
         onChangeText={(text) => {
-          if (/^\d*$/.test(text)) setPhone(text); // Chỉ cho phép số
+          if (/^\d*$/.test(text)) setPhone(text); // Only allow numbers
         }}
         mode="outlined"
         keyboardType="phone-pad"
-        maxLength={10} // Giới hạn số lượng ký tự nhập vào là 10
+        maxLength={10}
         style={styles.input}
       />
+
       {/* Update Button */}
       <Button
         mode="contained"
@@ -246,9 +236,8 @@ const isChanged = () => {
         disabled={!isChanged()} // Button is disabled if no changes are detected
         style={styles.button}
       >
-        Lưu thay đổi
+        <Text style={styles.buttonText}>Lưu thay đổi</Text>
       </Button>
-      ;
     </View>
   );
 };
@@ -260,7 +249,6 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
     justifyContent: "center",
-    // alignItems: "center",
   },
   loadingContainer: {
     flex: 1,
@@ -278,8 +266,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: "#F37199",
     padding: 5,
-    fontSize: 20,
+  },
+  buttonText: {
+    fontSize: 16,
     fontWeight: "bold",
+    color: "white",
   },
 });
 

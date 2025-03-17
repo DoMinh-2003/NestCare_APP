@@ -103,6 +103,20 @@ export const getDetailServiceByID = async (id: string) => {
   }
 };
 
+export const getDetailDoctorByID = async (id: string) => {
+  try {
+    const response = await axiosInstance.get(`/users/${id}`, {});
+
+    console.log("====================================");
+    console.log("getDetailDoctorByID", response);
+    console.log("====================================");
+
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getAllRoleDoctor = async (role: string) => {
   try {
     const response = await axiosInstance.get(`/users/role/doctor`, {
@@ -216,4 +230,3 @@ export const uploadImage = async (imageUri: string) => {
     return null;
   }
 };
-

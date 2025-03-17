@@ -141,7 +141,7 @@ const Service2 = ({ searchQuery }) => {
         ) : (
           <View style={styles.noOrderContainer}>
             <AntDesign name="inbox" size={50} color="#F37199" />
-            <Text style={styles.noOrderText}>No services available</Text>
+            <Text style={styles.noOrderText}>Không có dịch vụ nào</Text>
           </View>
           // <Text style={styles.noServiceText}>No services available</Text>
         )}
@@ -197,6 +197,8 @@ const styles = StyleSheet.create({
   scrollContainer: {
     marginBottom: 20,
     paddingLeft: 5,
+    flexGrow: 1,
+    // paddingBottom: 20,
   },
   card: {
     width: 140, // Ensures cards are wide enough

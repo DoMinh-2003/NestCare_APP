@@ -128,7 +128,7 @@ const OrderStatus = () => {
         ) : (
           <View style={styles.noOrderContainer}>
             <AntDesign name="inbox" size={50} color="#F37199" />
-            <Text style={styles.noOrderText}>No orders available</Text>
+            <Text style={styles.noOrderText}>Hiện không có đơn hàng</Text>
           </View>
         )}
       </View>
