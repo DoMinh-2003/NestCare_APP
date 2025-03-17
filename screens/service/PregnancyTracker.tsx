@@ -8,8 +8,9 @@ import {
   ScrollView,
   Animated,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome5";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/FontAwesome5";
+
 const Row = ({ children, style }) => (
   <View style={[styles.row, style]}>{children}</View>
 );
@@ -20,6 +21,7 @@ const Col = ({ children, style }) => (
 
 const PregnancyTracker = () => {
   const fillAnimation = useRef(new Animated.Value(0)).current;
+  const heartScale = useRef(new Animated.Value(1)).current;
 
   const totalDays = 280;
   const remainingDays = 100;
@@ -34,43 +36,60 @@ const PregnancyTracker = () => {
     }).start();
   }, [progress]);
 
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(heartScale, {
+          toValue: 1.2,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(heartScale, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.appTitle}>yumi2</Text>
       </View>
+
       <View style={styles.infoContainer}>
         <Row style={styles.infoRow}>
           <Col style={styles.iconCol}>
-            <View style={styles.heartContainer}>
-              <View style={styles.iconWrapper}>
+            <Row style={styles.infoRow}>
+              <View style={styles.heartContainer}>
                 <Animated.View
                   style={[
-                    styles.heartFill,
+                    styles.iconWrapper,
+                    { transform: [{ scale: heartScale }] },
+                  ]}
+                >
+                  <FontAwesome name="heart" size={60} color="#e74c3c" />
+                </Animated.View>
+              </View>
+            </Row>
+            <Row style={styles.progressContainer}>
+              <View style={styles.progressBarContainer}>
+                <Animated.View
+                  style={[
+                    styles.progressFill,
                     {
-                      height: fillAnimation.interpolate({
+                      width: fillAnimation.interpolate({
                         inputRange: [0, 1],
-                        outputRange: [0, 60], // Matches icon size
+                        outputRange: ["0%", "100%"],
                       }),
                     },
                   ]}
                 />
-
-                <FontAwesome
-                  name="heart-o"
-                  size={60}
-                  color="#e74c3c"
-                  style={styles.heartIcon}
-                />
-                {/* <Icon
-                  name="heartbeat"
-                  size={60}
-                  color="#e74c3c"
-                  style={styles.heartIcon}
-                /> */}
               </View>
-            </View>
-            <Text style={styles.percentageText}>{progressPercentage}%</Text>
+              <Text style={styles.percentageText}>{progressPercentage}%</Text>
+            </Row>
           </Col>
           <Col style={styles.infoDetails}>
             <Text style={styles.infoText}>
@@ -88,6 +107,8 @@ const PregnancyTracker = () => {
           </Col>
         </Row>
       </View>
+
+      {/* Feature Grid */}
       <View style={styles.grid}>
         <TouchableOpacity style={styles.card}>
           <Image
@@ -98,14 +119,17 @@ const PregnancyTracker = () => {
           />
           <Text style={styles.cardText}>Góc chia sẻ</Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.card}>
           <Icon name="footprint" size={40} color="#61a5f1" />
           <Text style={styles.cardText}>Theo dõi số lần đạp</Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.card}>
           <Icon name="weight" size={40} color="#61a5f1" />
           <Text style={styles.cardText}>Cân nặng mẹ bầu</Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.card}>
           <Icon name="book" size={40} color="#61a5f1" />
           <Text style={styles.cardText}>Kiến thức thai kỳ</Text>
@@ -143,17 +167,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 5,
   },
-  iconCol: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: 80,
-  },
-  infoDetails: {
-    flex: 1,
-  },
   heartContainer: {
     width: 60,
     height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  infoRow: {
     justifyContent: "center",
     alignItems: "center",
   },
@@ -164,20 +184,30 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  heartFill: {
-    position: "absolute",
-    bottom: 0,
-    width: 60,
-    height: "100%", // Để tự động co giãn theo animation
-    backgroundColor: "#e74c3c",
-    opacity: 0.5,
-    // borderBottomLeftRadius: 100, // Bo tròn phần dưới để khớp với icon
-    // borderBottomRightRadius: 100,
-    zIndex: -1, // Giữ fill ở phía sau icon
+  progressContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 10,
+    width: "100%",
   },
-
-  heartIcon: {
-    position: "absolute",
+  progressBarContainer: {
+    flex: 1,
+    height: 15,
+    backgroundColor: "#ddd",
+    borderRadius: 10,
+    overflow: "hidden",
+    marginRight: 10,
+  },
+  progressFill: {
+    height: "100%",
+    backgroundColor: "#e74c3c",
+    borderRadius: 10,
+  },
+  percentageText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#e74c3c",
   },
   infoText: {
     fontSize: 16,
@@ -200,12 +230,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
     elevation: 3,
-  },
-  percentageText: {
-    marginTop: 5,
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#e74c3c",
   },
   icon: {
     width: 40,
