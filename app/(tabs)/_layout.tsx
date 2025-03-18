@@ -41,7 +41,7 @@ const HomeTabs = () => {
           {
             /* <Ionicons name="gift-sharp" size={24} color="black" />; */
           }
-          if (route.name === "Community") iconName = "people";
+          if (route.name === "PregnancyTracker") iconName = "people";
           else if (route.name === "Appointment") iconName = "calendar";
           else if (route.name === "Packages") iconName = "gift-sharp";
           else if (route.name === "Profile") iconName = "person";
@@ -101,9 +101,9 @@ const HomeTabs = () => {
         options={{ title: "Packages" }}
       />
       <Tab.Screen
-        name="Community"
+        name="PregnancyTracker"
         component={PregnancyTracker}
-        options={{ title: "Community" }}
+        options={{ title: "PregnancyTracker", headerShown: false }}
       />
       <Tab.Screen
         name="Profile"

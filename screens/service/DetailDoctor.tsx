@@ -7,53 +7,62 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import { AntDesign } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 import { useNavigation, RouteProp } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getDetailDoctorByID } from "../../service/userService";
 
 // Define type for route parameters
-type DetailServiceRouteProp = RouteProp<
-  { DetailService: { serviceId: string } },
-  "DetailService"
+type DetailDoctorRouteProp = RouteProp<
+  { DetailDoctor: { doctorId: string } },
+  "DetailDoctor"
 >;
 
-interface DetailServiceProps {
-  route: DetailServiceRouteProp;
+interface DetailDoctorProps {
+  route: DetailDoctorRouteProp;
 }
 
-interface ServiceItem {
+interface DoctorItem {
   id: string;
   name: string;
-  provider?: string;
-  price: string;
   image?: string;
-  description?: string;
+  specialization?: string;
+  experience?: string;
+  phone?: string;
+  email?: string;
+  role?: string;
 }
 
-const DetailDoctor: React.FC<DetailServiceProps> = ({ route }) => {
+const DetailDoctor: React.FC<DetailDoctorProps> = ({ route }) => {
   const navigation = useNavigation();
-  const { serviceId } = route.params;
-  const [service, setService] = useState<ServiceItem | null>(null);
+  const { doctorId } = route.params;
+  const [doctor, setDoctor] = useState<DoctorItem | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    fetchServiceDetails();
-  }, [serviceId]);
+    if (doctorId) {
+      fetchDoctorDetails();
+    } else {
+      console.error("doctorId is undefined!");
+    }
+  }, [doctorId]);
 
-  const fetchServiceDetails = async () => {
+  const fetchDoctorDetails = async () => {
     try {
       setLoading(true);
-      const response = await getDetailDoctorByID(serviceId);
-      if (response?.data) {
-        setService(response.data);
+      const response = await getDetailDoctorByID(doctorId);
+      if (response) {
+        setDoctor(response);
+      } else {
+        console.warn("Doctor details not found!");
+        setDoctor(null);
       }
     } catch (error) {
-      console.error("Error fetching service details: ", error);
+      console.error("Error fetching doctor details: ", error);
       Toast.show({
-        text1: "Error fetching service details",
-        text2: "Please try again later.",
+        text1: "Lỗi tải dữ liệu",
+        text2: "Vui lòng thử lại sau.",
         position: "top",
         type: "error",
         visibilityTime: 2000,
@@ -67,46 +76,45 @@ const DetailDoctor: React.FC<DetailServiceProps> = ({ route }) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#FF6347" />
-        <Text style={styles.loadingText}>Fetching Service Details...</Text>
+        <ActivityIndicator size="large" color="#F37199" />
+        <Text style={styles.loadingText}>Đang tải...</Text>
       </View>
     );
   }
 
-  if (!service) {
+  if (!doctor) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Service Not Found</Text>
+        <AntDesign name="inbox" size={50} color="#F37199" />
+        <Text style={styles.loadingText}>Không tìm thấy bác sĩ</Text>
       </View>
     );
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.headerButton}
-        >
-          <Icon name="arrow-left" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>{service.name}</Text>
-      </View> */}
-
-      <View style={styles.contentContainer}>
+      <View style={styles.profileCard}>
         <Image
           source={
-            service.image
-              ? { uri: service.image }
+            doctor.image
+              ? { uri: doctor.image }
               : require("../../assets/images/default-image.jpg")
           }
-          style={styles.image}
+          resizeMode="contain"
+          style={styles.avatar}
         />
-        <Text style={styles.price}>
-          {parseFloat(service.price).toLocaleString("vi-VN")} VND
+        <Text style={styles.name}>{doctor.fullName || "Chưa có tên"}</Text>
+        <Text style={styles.specialization}>
+          <AntDesign name="idcard" size={18} color="#F37199" />{" "}
+          {doctor.role || "Không có vai trò"}
         </Text>
-        <Text style={styles.description}>
-          {service.description || "No description available."}
+        <Text style={styles.info}>
+          <AntDesign name="phone" size={18} color="#F37199" />{" "}
+          {doctor.phone || "Không có số điện thoại"}
+        </Text>
+        <Text style={styles.info}>
+          <AntDesign name="mail" size={18} color="#F37199" />{" "}
+          {doctor.email || "Không có email"}
         </Text>
       </View>
     </SafeAreaView>
@@ -114,56 +122,57 @@ const DetailDoctor: React.FC<DetailServiceProps> = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: "rgb(0, 110, 173)",
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-  },
-  headerButton: {
-    padding: 10,
-  },
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F5F5F5",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
   },
   loadingText: {
     fontSize: 16,
-    color: "#666666",
     marginTop: 10,
+    color: "#F37199",
   },
-  contentContainer: {
-    flex: 1,
-    padding: 16,
-  },
-  image: {
+  profileCard: {
+    backgroundColor: "#FFFFFF",
+    padding: 20,
+    borderRadius: 15,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
     width: "100%",
-    height: 300,
-    resizeMode: "contain",
-    borderRadius: 10,
   },
-  price: {
-    fontSize: 18,
+  avatar: {
+    width: 200,
+    height: 200,
+    borderRadius: 60,
+    marginBottom: 15,
+  },
+  name: {
+    fontSize: 22,
     fontWeight: "bold",
-    color: "red",
-    marginTop: 10,
+    color: "#333",
   },
-  description: {
+  specialization: {
+    fontSize: 18,
+    color: "#666",
+    marginBottom: 10,
+  },
+  info: {
     fontSize: 16,
-    color: "#333333",
-    marginTop: 10,
+    color: "#444",
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 5,
   },
 });
 

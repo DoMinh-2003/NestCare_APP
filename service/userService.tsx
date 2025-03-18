@@ -230,3 +230,19 @@ export const uploadImage = async (imageUri: string) => {
     return null;
   }
 };
+
+export const GetFetalRecord = async (userId: string) => {
+  try {
+    const response = await axiosInstance.get(`/fetal-records/${userId}`, {
+      // params: { status },
+    });
+
+    console.log("====================================");
+    console.log("GetFetalRecord", response);
+    console.log("====================================");
+
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};

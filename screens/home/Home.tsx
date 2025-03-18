@@ -18,6 +18,7 @@ import { RootState } from "@/redux/store";
 import AppointmentCard from "../service/AppointmentCard";
 import SubscriptionUI from "../packages/SubscriptionUI";
 import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "expo-router";
 
 const HomeScreen = () => {
   const [doctors, setDoctors] = useState([]);
@@ -27,6 +28,7 @@ const HomeScreen = () => {
   const searchWidth = useRef(new Animated.Value(0)).current;
   const fullName = useSelector((state: RootState) => state.user?.fullName);
   const image = useSelector((state: RootState) => state.user?.image);
+  const navigation = useNavigation();
 
   const fetchDoctors = useCallback(async () => {
     const doctorList = await getAllRoleDoctor("doctor");
@@ -156,10 +158,10 @@ const HomeScreen = () => {
         {doctors.length > 0 ? (
           doctors.map((doctor) => (
             <TouchableOpacity
-              key={item.id}
+              key={doctor.id}
               style={styles.card}
               onPress={() =>
-                navigation.navigate("DetailDoctor", { serviceId: item.id })
+                navigation.navigate("DetailDoctor", { doctorId: doctor.id })
               }
             >
               <View key={doctor.id} style={styles.doctorCard}>
